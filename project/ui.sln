@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ui_wince", "ui_wince\ui_wince.vcproj", "{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|MT8530_WINCE600_SDK (ARMV4I) = Debug|MT8530_WINCE600_SDK (ARMV4I)
+		Debug|Win32 = Debug|Win32
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|MT8530_WINCE600_SDK (ARMV4I) = Release|MT8530_WINCE600_SDK (ARMV4I)
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Debug|Mixed Platforms.ActiveCfg = Debug|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Debug|Mixed Platforms.Build.0 = Debug|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Debug|Mixed Platforms.Deploy.0 = Debug|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Debug|MT8530_WINCE600_SDK (ARMV4I).ActiveCfg = Debug|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Debug|MT8530_WINCE600_SDK (ARMV4I).Build.0 = Debug|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Debug|MT8530_WINCE600_SDK (ARMV4I).Deploy.0 = Debug|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Debug|Win32.ActiveCfg = Debug|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Release|Mixed Platforms.ActiveCfg = Release|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Release|Mixed Platforms.Build.0 = Release|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Release|Mixed Platforms.Deploy.0 = Release|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Release|MT8530_WINCE600_SDK (ARMV4I).ActiveCfg = Release|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Release|MT8530_WINCE600_SDK (ARMV4I).Build.0 = Release|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Release|MT8530_WINCE600_SDK (ARMV4I).Deploy.0 = Release|MT8530_WINCE600_SDK (ARMV4I)
+		{66B6C4CE-9E3A-4C4A-85BD-F15090796A8C}.Release|Win32.ActiveCfg = Release|MT8530_WINCE600_SDK (ARMV4I)
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

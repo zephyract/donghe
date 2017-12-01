@@ -1,0 +1,113 @@
+#ifndef _IPODMESSAGE_DEF_H_
+#define _IPODMESSAGE_DEF_H_
+#define  IPOD_MAX_STR_LEN 256
+
+static UINT WM_IPOD_OUTMSG = RegisterWindowMessage(TEXT("WM_IPOD_OUTMSG"));
+static UINT WM_IPOD_OUT_PLAYSTATU = RegisterWindowMessage(TEXT("WM_IPOD_OUT_PLAYSTATU"));  
+
+//LPARMA //索引号
+typedef enum 
+{ 
+	MSG_PLAYCTRL_RESERVED		= 0,
+	MSG_PLAYCTRL_STARTPLAY,
+    MSG_PLAYCTRL_GETTRACKINDEX,
+	MSG_PLAYCTRL_GETCURTRACKINDEX,
+	MSG_PLAYCTRL_GETTRACKID3TAG,
+	MSG_PLAYCTRL_GETTRACKARTWORK,
+	MSG_PLAYCTRL_GETPLAYSTATU,
+	MSG_PLAYCTRL_GETPLAYMODE,        //lowbyte :Reapte //HIbyte :shuffle
+	MSG_PLAYCTRL_PLAYPAUSE,
+	MSG_PLAYCTRL_STOP,
+	MSG_PLAYCTRL_START_FF,
+	MSG_PLAYCTRL_START_REW,
+	MSG_PLAYCTRL_END_FF_REW,
+	MSG_PLAYCTRL_NEXT,
+	MSG_PLAYCTRL_PRE,
+	MSG_PLAYCTRL_REPEATALL,
+	MSG_PLAYCTRL_REPEATOEN,
+	MSG_PLAYCTRL_REPEATRANDOM,
+	MSG_PLAYCTRL_MUTE,
+
+}MSGIPOD_PLAYBACKCMD; 
+
+
+
+static UINT WM_IPOD_OUT_DATABASE_LIST = RegisterWindowMessage(TEXT("WM_IPOD_OUT_DATABASE_LIST")); //IPOD设备发送   
+typedef enum 
+{ 
+	MSG_DBLIST_TOTALRECORDS	= 0,
+	MSG_DBLIST_DOWNLOAD,
+
+}MSGIPOD_DBLIST;
+
+static UINT WM_IPOD_IN_CONNECT = RegisterWindowMessage(TEXT("WM_IPOD_IN_CONNECT")); //客户端 查询连接状态  
+static UINT WM_IPOD_IN_CONTRL = RegisterWindowMessage(TEXT("WM_IPOD_CONTRL")); //      
+static UINT WM_IPOD_IN_DATABASE_LIST = RegisterWindowMessage(TEXT("WM_IPOD_IN_DATABASE_LIST")); //
+static UINT WM_IPOD_IN_READDBLIST = RegisterWindowMessage(TEXT("WM_IPOD_IN_READDBLIST")); // 
+static UINT WM_IPOD_IN_READCATEGORY = RegisterWindowMessage(TEXT("WM_IPOD_IN_READCATEGORY")); // 
+static UINT WM_IPOD_IN_PLAYSTATU = RegisterWindowMessage(TEXT("WM_IPOD_IN_PLAYSTATU")); 
+
+
+ 
+//WPARMA  //数据库结构
+typedef enum 
+{ 
+	MSG_DATABASELIST_GETTRACK	= 0,
+
+}MSGDATABASE_LIST;
+
+
+static UINT WM_IPOD_IN_ADUCFG = RegisterWindowMessage(TEXT("WM_IPOD_IN_ADUCFG")); 
+
+typedef enum 
+{ 
+	MSG_ADU_ACTIVE		= 0,
+	MSG_ADU_SINK,
+
+}MSGIPOD_ADUCFG;
+
+
+typedef struct
+{
+ UINT8 u1SelectDbCategory; 
+ UINT8 u1QueryDbCategory;
+ WORD  wIndex;
+}DataBaseDir;
+
+//wparam  控制参数
+
+static UINT WM_IPOD_LIST = RegisterWindowMessage(TEXT("WM_IPOD_LIST")); //IPOD列表消息
+//Wparam 列表类型         低字节WORD:数据库类型ID， 高字节WORD:数据库目录ID
+//Lparam 列表索引号
+
+typedef struct
+{
+	UINT32 u4RecIdx;
+	TCHAR TrackTitle[IPOD_MAX_STR_LEN];
+	TCHAR TrackArtist[IPOD_MAX_STR_LEN];
+	TCHAR TrackAlbum[IPOD_MAX_STR_LEN];
+}PLAYBACK_ID3TAG;
+
+typedef enum
+{
+	RPTONE = 1,			
+	RPTALL  =  2,	
+	RDM  = 3,	
+	COUNT=4,
+}
+PLAYMODE;
+
+
+typedef  struct
+{
+	UINT8   *pImageData;			
+	UINT32  u4ImageLen;	
+	UINT32  u4PicWith;	
+	UINT32  u4PicHeight;
+}UIPOD_ARTWORKDATA;
+
+
+
+
+
+#endif //_IPODMESSAGE_DEF_H_
