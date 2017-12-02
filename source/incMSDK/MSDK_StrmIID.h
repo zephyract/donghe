@@ -52,7 +52,7 @@
 *
 *
 *------------------------------------------------------------------------------
-* $Revision: #1 $
+* $Revision: #2 $
 * $Modtime:$
 * $Log:$
 *
@@ -68,21 +68,25 @@
 //IID for interface query
 typedef enum
 {
-    IID_MSDK_VIDEOINFO,         /**<video info      */
-    IID_MSDK_AUDIOINFO,         /**<audio info      */
-    IID_MSDK_SUBTITLEINFO,      /**<subtitle  info  */
+    IID_MSDK_VIDEOINFO,			/**<video info		*/
+    IID_MSDK_AUDIOINFO,			/**<audio info		*/
+    IID_MSDK_SUBTITLEINFO,		/**<subtitle  info	*/
     IID_MSDK_LYRICINFO,         /**<lyric info */
-    IID_MSDK_DVDINFO,           /**<dvd info        */
-    IID_MSDK_VIDEOCTRL,         /**<video control   */
-    IID_MSDK_AUDIOCTRL,         /**<audio control   */
-    IID_MSDK_SUBTITLECTRL,      /**<subtitle control    */
-    IID_MSDK_DVDCTRL,           /**<dvd control */
-    IID_MSDK_MP3INFO,           /**<mp3 info        */
+    IID_MSDK_DVDINFO,			/**<dvd info		*/
+    IID_MSDK_VIDEOCTRL,			/**<video control	*/
+    IID_MSDK_AUDIOCTRL,			/**<audio control	*/
+    IID_MSDK_SUBTITLECTRL,		/**<subtitle control	*/
+    IID_MSDK_DVDCTRL,			/**<dvd control	*/
+    IID_MSDK_MP3INFO,			/**<mp3 info		*/
+#if ENABLE_ISDBT
     IID_MSDK_DVXMENUINFO,       /**<divx menu  info */
     IID_MSDK_TVNCTRL,           /**<Tvn Ctrl */
     IID_MSDK_SRVLISTDB,         /**<SRVLIST DB */
     IID_MSDK_EPGCTRL,           /**<Epg Ctrl */
     IID_MSDK_SNAPSHOTCTRL
+#else
+    IID_MSDK_DVXMENUINFO       /**<divx menu  info */
+#endif
 };
 
 /**

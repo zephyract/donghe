@@ -53,7 +53,7 @@
 *
 * Last changed:
 * ------------- 
-* $Author: dejun.liu $ 
+* $Author: zeng.zhang $ 
 *
 * $Modtime: $  
 *
@@ -65,6 +65,10 @@
 
 #include "GDef.h"
 #include "GRect.h"
+
+#if defined(MTK_FP)
+#include "gdi_datatype.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -182,15 +186,21 @@ typedef GVOID (*PFN_GDIRENDERCB)(HWND m_hWnd);
 
 #define DISPLAY_SET_REAR_RECT                    (0x0002000c)
 
-#define DISPLAY_SET_PRIMARY_SURFACE_SRC_CLRKEY      (0x00020012)
-
-#define DISPLAY_SET_PRIMARY_SURFACE_ALPHA_BLENDING   (0x20013)
 
 /**
 * @name Bitblt source over rule
 */
 #define ROPCODE_SRCCOPY             0   /**< source copy. */
 /*@}*/
+
+#ifdef MTK_FP
+#define RGB(r, g, b)        ((GUINT32)(((GUINT8)(r)        |  \
+                            ((GUINT16)((GUINT8)(g)) << 8)) |  \
+                            (((GUINT32)(GUINT8)(b)) << 16)))
+#define GetRValue(rgb)      ((GUINT8)(rgb))
+#define GetGValue(rgb)      ((GUINT8)(((GUINT16)(rgb)) >> 8))
+#define GetBValue(rgb)      ((GUINT8)((rgb) >> 16))
+#endif
 
 /*@{*/
 /**
@@ -285,7 +295,7 @@ typedef enum
 */
 enum
 {
-    SOURCE_NULL,
+	SOURCE_NULL,
     FRONT_DVD,      
     FRONT_USB,         
     FRONT_SD,        
@@ -298,7 +308,9 @@ enum
 
 typedef GVOID *          HGC;
 
-#if defined(WIN32) || defined(_WIN32_WCE)
+#if defined(MTK_FP)
+typedef gdi_handle      HSURFACE;
+#elif defined(WIN32) || defined(_WIN32_WCE)
 typedef HDC             HSURFACE;
 #endif
 
@@ -1120,17 +1132,22 @@ GAPI GINT32      GGetStrHeightW(HGC hGC, GWCHAR *szString);
 
 //----------------------------------------------------------------------------------------
 //Description:
-//    Set the format for draw text.
+//	Set the format for draw text.
 //
 //Parameters:
-//    uFormat : [in] The text format.The value is the same with uFormat of DrawText api
+//	uFormat : [in] The text format.The value is the same with uFormat of DrawText api
 //-----------------------------------------------------------------------------------------
 GVOID GSetDrawTextFormat(UINT uFormat);
 
 
 //mtk71372 2012.01.06 --------------------------------------------------------------- end
 
-#if defined(UNICODE)
+#if defined(MTK_FP)
+#define GDrawString                     GDrawStringW
+#define GDrawStringWithBorder           GDrawStringWithBorderW
+#define GGetStrWidth                    GGetStrWidthW
+#define GGetStrHeight                   GGetStrHeightW
+#elif defined(UNICODE)
 #define GDrawString                     GDrawStringW
 #define GDrawStringWithBorder           GDrawStringWithBorderW
 #define GGetStrWidth                    GGetStrWidthW

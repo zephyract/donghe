@@ -71,31 +71,30 @@
 //msdk error code
 enum
 {
-    S_MSDK_OK,                      /**<msdk successful               */
-    S_MSDK_TRUE = S_MSDK_OK,
-    S_MSDK_FALSE,
-    E_MSDK_INVALID_PARAM,           /**<error invalid parameter       */
-    E_MSDK_INVALID_SOURCE,          /**<error invalid source          */
-    E_MSDK_INTERFACE_NULL,          /**<no media interface            */
-    E_MSDK_INTERFACE_NOT_SUPPORT,   /**<interface not implement       */
-    E_MSDK_NO_MEDIA_GRAPH,          /**<no meida graph                */
-
-    E_MSDK_OUT_OF_MEMORY,           /**<out of memory                 */
-    E_MSDK_READ_FILE_FAILED,        /**<read file failed              */
-    E_MSDK_UNSUPPORTED_STREAM_VIDEO, /**<video stream not support,such as not support codec etc            */
-    E_MSDK_UNSUPPORTED_STREAM_AUDIO, /**<audio stream not support,such as not support codec etc            */
-    E_MSDK_UNSUPPORTED_STREAM_MENU,  /**<a menu stream of a divx menu file is not support            */
-    E_MSDK_UNSUPPORTED_MEDIA_FILE,   /**<not support file,audio and video not support,invalid headinfo etc */
-    E_MSDK_UNSUPPORTED_DRM,          /**<encrypt file not support                                                           */
-    E_MSDK_ERROR_MEDIA_DATA,         /**<error meida data  and can not play                                        */
-    E_MSDK_ERROR_FRAGMENT_DATA,      /**<error fragement data, but can  play  */
-    E_MSDK_DRM_NOT_AUTHORIZED,
-    E_MSDK_DRM_NOT_REGISTERED,
-    E_MSDK_DRM_RENTAL_EXPIRED,
-    E_MSDK_DRM_GENERAL_ERROR,
-    E_MSDK_DRM_NEVER_REGISTERED,
-    E_MSDK_DRM_NEED_RENTAL_CONFIRM,
-
+    S_MSDK_OK,						/**<msdk successful			*/
+    E_MSDK_OUTOFMEMORY,				/**<error out of memory		*/
+    E_MSDK_INVALID_FILE_FORMAT,		/**<error invalid file format		*/
+    E_MSDK_INVALID_PARAM,			/**<error invalid parameter		*/
+    E_MSDK_INVALID_SOURCE,			/**<error invalid source		*/
+    E_MSDK_UNSUPPORTED_VIDEO,		/**<unsupported video			*/
+    E_MSDK_UNSUPPORTED_AUDIO,		/**<unsupported audio			*/
+    E_MSDK_INVALID_MEDIA_TYPE,		/**<invalid media type			*/
+    E_MSDK_ERROR_MEDIA_DATA,		/**<error meida data			*/
+    E_MSDK_SYSTEM_BUSY,				/**<system busy				*/
+    E_MSDK_NO_SOURCE,				/**<error no source			*/
+    E_MSDK_NO_SINK,					/**<error no sink				*/
+    E_MSDK_CANNOT_CONNECT,			/**<connect fail				*/
+    E_MSDK_CANNOT_RENDER,			/**<render fail				*/
+    E_MSDK_NOT_PLAYING,
+    E_MSDK_NOT_PAUSED,
+    E_MSDK_NOT_STOPED,
+    E_MSDK_TIMEOUT,
+    E_MSDK_UNSUPPORTED_STREAM,
+    E_MSDK_DRM_NOT_SUPPORT,
+    E_MSDK_NOT_SUPPORT,
+    E_MSDK_NO_MEDIA_GRAPH,
+    E_MSDK_NOT_WINDOW_MODE,
+    E_MSDK_ALREADY_WINDOW_MODE,
     E_MSDK_FAILED
 };
 

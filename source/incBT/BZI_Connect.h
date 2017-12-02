@@ -53,11 +53,11 @@
   *
   * Last changed:
   * ------------- 
-  * $Author: dejun.liu $ 
+  * $Author: yu.mo $ 
   *
   * $Modtime: $  
   *
-  * $Revision: #1 $
+  * $Revision: #3 $
  ****************************************************************************/
  
 #ifndef _BZI_CONNECT_H_

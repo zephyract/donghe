@@ -53,11 +53,11 @@
  *
  * Last changed:
  * ------------- 
- * $Author: dejun.liu $ 
+ * $Author: xiaozhou.huang $ 
  *
  * $Modtime: $  
  *
- * $Revision: #1 $
+ * $Revision: #2 $
 ****************************************************************************/
 
 #ifndef _BZI_PAIRING_H_

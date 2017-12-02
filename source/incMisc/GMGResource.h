@@ -66,6 +66,7 @@
 extern "C" {
 #endif
 
+#if 1
 #define MAX_SECTION_NAME_LEN   (8)
 #define MAX_MACRO_LEN          (64)
 #define SIZEOFBOM              (2)
@@ -74,6 +75,16 @@ extern "C" {
 #define MINOR_VER              (0x0000)
 #define INVALID_SECTION_OFFSET (0xFFFFFFFF)
 #define INVALID_RESOURCE_ID    (0xFFFFFFFF)
+#else
+const GINT32 MAX_SECTION_NAME_LEN = 8;
+const GINT32 MAX_MACRO_LEN = 64;
+const GINT32 SIZEOFBOM = 2;
+const GUINT32 MAGIC_CODE = 0x0000524D;
+const GINT16 MAJOR_VER = 0x0001;
+const GINT16 MINOR_VER = 0x0000;
+const GUINT32 INVALID_SECTION_OFFSET = 0xFFFFFFFF;
+const GUINT32 INVALID_RESOURCE_ID = 0xFFFFFFFF;
+#endif
 
 typedef struct _MGRC_FILE_HEADER_ 
 {

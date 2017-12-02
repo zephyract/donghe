@@ -155,7 +155,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,6.00"
-				AdditionalDependencies="libWceUi.lib WceUiDll.lib DVPAgent.lib misc.lib msdk.lib Ddraw.lib ddguid.lib dxguid.lib msdk4wma.lib BlueZMW.lib sqlite.lib ECarDll.lib phonelinkdll.lib avin.lib"
+				AdditionalDependencies="libWceUi.lib WceUiDll.lib DVPAgent.lib misc.lib msdk.lib Ddraw.lib ddguid.lib dxguid.lib msdk4wma.lib BlueZMW.lib sqlite.lib ECarDll.lib phonelinkdll.lib dvr.lib"
 				OutputFile="$(SolutionDir)/../bin/wince/main.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\wince"
@@ -184,7 +184,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="\residentflash2\app"
+				RemoteDirectory="\residentflash2\app1"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>

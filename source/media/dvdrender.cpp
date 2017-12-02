@@ -48,19 +48,19 @@ CDvdRender* CDvdRender::GetInstance()
 }
 
 
-static DVD_SINK_T _GetSinkType(DVP_SINK sink_type)
+static SWI_SINK_T _GetSinkType(DVP_SINK sink_type)
 {
 	if (sink_type == DVP_SINK_FRONT || sink_type == DVP_SINK_REAR || sink_type == DVP_SINK_FRONT_REAR)
 	{
-		return (DVD_SINK_T)sink_type;
+		return (SWI_SINK_T)sink_type;
 	}
 	else if (sink_type == DVP_SINK_FRONTV_REAR)
 	{
-		return DVD_SINK_REAR;
+		return SWI_SINK_REAR;
 	}
 	else	// 如果是未知类型，直接设为前后排输出
 	{
-		return DVD_SINK_FRONT_REAR;
+		return SWI_SINK_FRONT_REAR;
 	}
 }
 
@@ -164,10 +164,10 @@ void CDvdRender::HandleEvent()
 }
 
 
-void CDvdRender::ShowVideo(BOOL bShow, RECT *prect, DVD_SINK_T sink)
+void CDvdRender::ShowVideo(BOOL bShow, RECT *prect, SWI_SINK_T sink)
 {
-	DVD_SINK_INFO_T ssi;
-	ssi.u4Flag = bShow ? DVD_INFO_SHOW : DVD_INFO_HIDE;
+	SWI_SINK_INFO_T ssi;
+	ssi.u4Flag = bShow ? SWI_INFO_SHOW : SWI_INFO_HIDE;
 	ssi.eSink = sink;
 	if (!prect)
 	{
@@ -182,10 +182,10 @@ void CDvdRender::ShowVideo(BOOL bShow, RECT *prect, DVD_SINK_T sink)
 
 void CDvdRender::SetSink(DVP_SINK sink_type)
 {
-	DVD_SINK_INFO_T ssi;
+	SWI_SINK_INFO_T ssi;
 	memset(&ssi, 0, sizeof(ssi));
-	ssi.eSink = (DVD_SINK_T)sink_type;
-	ssi.u4Flag = DVD_INFO_SHOW;
+	ssi.eSink = (SWI_SINK_T)sink_type;
+	ssi.u4Flag = SWI_INFO_SHOW;
 
 	if (sink_type == DVP_SINK_FRONT 
 		|| sink_type == DVP_SINK_REAR
@@ -195,9 +195,9 @@ void CDvdRender::SetSink(DVP_SINK sink_type)
 	}
 	else if (sink_type == DVP_SINK_FRONTV_REAR)
 	{
-		ssi.eSink = DVD_SINK_REAR;
+		ssi.eSink = SWI_SINK_REAR;
 		DVP_AVSwitch(&ssi);
-		ssi.eSink = DVD_SINK_FRONT_REAR;
+		ssi.eSink = SWI_SINK_FRONT_REAR;
 		DVP_AVSwitchVideo(&ssi);
 	}
 
@@ -304,13 +304,13 @@ void CDvdRender::LaunchSrc(DVP_SINK sink_type)
 	GChooseSpdifOutput(hAudioDev,MISC_AUD_DVD_OUT);
 	GCloseAudioDev(hAudioDev);
 
-	DVD_SINK_INFO_T ssi;
+	SWI_SINK_INFO_T ssi;
 	ssi.eSink = _GetSinkType(sink_type);
 	SetRect(&ssi.DestRect, 0, 0, GetSystemMetrics(SM_CXSCREEN),GetSystemMetrics(SM_CYSCREEN));
 
 	//ssi.u4Flag = (::IsWindowVisible(m_hwnd) ? SWI_INFO_SHOW : SWI_INFO_HIDE) |  SWI_INFO_SRCCOLKEY;
 	// 初始化时直接HIDE, 碟片类型识别后，再show
-	ssi.u4Flag = DVD_INFO_HIDE |  DVD_INFO_SRCCOLKEY;
+	ssi.u4Flag = SWI_INFO_HIDE |  SWI_INFO_SRCCOLKEY;
 	ssi.ovfx.dckSrcColorkey.dwColorSpaceLowValue = COLOR_SPACE_LOW_VALUE;
 	ssi.ovfx.dckSrcColorkey.dwColorSpaceHighValue = COLOR_SPACE_HIGH_VALUE;
 
@@ -581,10 +581,10 @@ void CDvdRender::OpenAudio()
 	GChooseSpdifOutput(hAudioDev,MISC_AUD_DVD_OUT);
 	GCloseAudioDev(hAudioDev);
 
-	DVD_SINK_INFO_T ssi;
-	ssi.eSink = (DVD_SINK_T)m_SinkType;
+	SWI_SINK_INFO_T ssi;
+	ssi.eSink = (SWI_SINK_T)m_SinkType;
 	SetRect(&ssi.DestRect, 0, 0, GetSystemMetrics(SM_CXSCREEN),GetSystemMetrics(SM_CYSCREEN));
-	ssi.u4Flag = DVD_INFO_HIDE | DVD_INFO_SRCCOLKEY;;
+	ssi.u4Flag = SWI_INFO_HIDE | SWI_INFO_SRCCOLKEY;;
 	ssi.ovfx.dckSrcColorkey.dwColorSpaceLowValue = COLOR_SPACE_LOW_VALUE;
 	ssi.ovfx.dckSrcColorkey.dwColorSpaceHighValue = COLOR_SPACE_HIGH_VALUE;
 	DVP_SetSurfaceInfo(&ssi);
@@ -596,7 +596,6 @@ void CDvdRender::OpenAudio()
 
 void CDvdRender::CloseAudio()
 {
-	// 由调用者管理该接口,关闭前必须保持pause
-//	DVP_Pause();
-	DVP_AVDeinit(DVD_SINK_FRONT);
+	DVP_Pause();
+	DVP_AVDeinit(SWI_SINK_FRONT);
 }

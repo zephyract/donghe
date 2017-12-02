@@ -52,7 +52,7 @@
 *
 *
 *------------------------------------------------------------------------------
-* $Revision: #1 $
+* $Revision: #3 $
 * $Modtime:$
 * $Log:$
 *
@@ -314,16 +314,15 @@ extern "C" {
 **/	
 	GRESULT GSetRootPath(GTCHAR *root);
 
-/**
-* @brief  The method set cur path of searching.
-*
-* @param[in] curpath The path is cur directory to be searched.
-*
-* @return GRESULT define in GDef.h
-*
-**/ 
-GRESULT GSetCurPath(GTCHAR *curPath);
-
+   /**
+   * @brief  The method set cur path of searching.
+   *
+   * @param[in] curpath The path is cur directory to be searched.
+   *
+   * @return GRESULT define in GDef.h
+   *
+   **/ 
+   GRESULT GSetCurPath(GTCHAR *curPath);
 /**
 * @brief  The method responsibles for register window for handling message from searching thread.  
 *

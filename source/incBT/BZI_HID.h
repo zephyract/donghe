@@ -53,11 +53,11 @@
  *
  * Last changed:
  * ------------- 
- * $Author: dejun.liu $ 
+ * $Author: xiaozhou.huang $ 
  *
  * $Modtime: $  
  *
- * $Revision: #1 $
+ * $Revision: #2 $
 ****************************************************************************/
 
 #ifndef _BZI_HID_H_
@@ -74,9 +74,9 @@ HRESULT BZ_HIDConnect(BT_ADDR addr = 0);
 
 HRESULT BZ_HIDDisconnect(void);
 
-HRESULT BZ_HIDSendInterruptData(BYTE *pbData, DWORD dwSize);
+HRESULT BZ_HIDSendInterruptData(const BYTE *pbData, DWORD dwSize);
 
-HRESULT BZ_HIDSendControlData(BYTE *pbData, DWORD dwSize);
+HRESULT BZ_HIDSendControlData(const BYTE *pbData, DWORD dwSize);
 
 HRESULT BZ_HIDGetConnectedAddr(BT_ADDR *pAddr);
 

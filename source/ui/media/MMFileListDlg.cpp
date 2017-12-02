@@ -723,20 +723,20 @@ void CMMFileListDlg::CheckMediaInfo()
 {
 	if (!CMsdkRender::GetInstance()->FIsMediaTypeSupport())
 	{
-		OnErrorOccured(E_MSDK_UNSUPPORTED_STREAM_VIDEO, 0);
+		OnErrorOccured(E_MSDK_NOT_SUPPORT, 0);
 		COverlayDlg::GetInstance()->MessageTip_ShowUI(L"MIS_UNSUPPORTED_VIDEO", TRUE, 1000);
 	}
 }
 
 void CMMFileListDlg::OnErrorOccured(UINT param1, UINT param2)
 {
-	if (param1 != E_MSDK_OUT_OF_MEMORY)
+	if (param1 != E_MSDK_OUTOFMEMORY)
 	{
-		if (param1 == E_MSDK_UNSUPPORTED_STREAM_VIDEO)
+		if (param1 == E_MSDK_UNSUPPORTED_VIDEO)
 		{
 			m_nErrorCode = VIDEO_ERROR_VIDEO;
 		}
-		else if (param1 == E_MSDK_UNSUPPORTED_STREAM_AUDIO)
+		else if (param1 == E_MSDK_UNSUPPORTED_AUDIO)
 		{
 			m_nErrorCode = VIDEO_ERROR_AUDIO;
 		} 

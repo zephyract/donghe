@@ -237,11 +237,13 @@ void CAvin2Dlg::OnAnimating()
 
 void CAvin2Dlg::OnMediaEvent(UINT media_event, UINT param1, UINT param2)
 {
+	RECT rc;
+	::SetRect(&rc, 10, 4, 714, 576);		// 720X576
 	switch(media_event)
 	{
-	case AVIN_SIGNAL_CHANGE:
+	case EVT_MSDK_AVIN_SIGNAL_CHANGE:
 		break;
-	case AVIN_SIGNAL_READY:
+	case EVT_MSDK_AVIN_SIGNAL_READY:
 		KillTimer(TIMER_ID_SHOW_SIGNAL_FLAG);
 		m_bIsSiganlReady = TRUE;
 		ShowNoSignalFlag();	
@@ -249,7 +251,7 @@ void CAvin2Dlg::OnMediaEvent(UINT media_event, UINT param1, UINT param2)
 		SetTimer(TIMER_ID_AUTO_FULLSCREEN, AUTO_FULLSCREEN_TIME);
 		UpdateVideoParams();
 		break;
-	case AVIN_SIGNAL_LOST:
+	case EVT_MSDK_AVIN_SIGNAL_LOST:
 		m_bIsSiganlReady = FALSE;
 		SetTimer(TIMER_ID_SHOW_SIGNAL_FLAG, 1000);		
 		UpdateVideoParams();
@@ -264,14 +266,14 @@ void CAvin2Dlg::OnMediaEvent(UINT media_event, UINT param1, UINT param2)
 void CAvin2Dlg::SetVideoScale()
 {
 	RECT rc;
-	E_AVIN_SIGNAL_MODE_T mode = CMsdkRender::GetInstance()->AGetSignalModeAvin2();
-	if (mode == AVIN_SIGNAL_PAL)
+	MSDK_AVIN_SIGNAL_MODE_T mode = CMsdkRender::GetInstance()->AGetSignalModeAvin2();
+	if (mode == MSDK_AVIN_SIGNAL_PAL)
 	{
 		::SetRect(&rc, 10, 4, 714, 576);		// 720X576
 		CMsdkRender::GetInstance()->SetVideoScaleAvin2(&rc);
 	}
-	else if (mode == AVIN_SIGNAL_PAL_M
-		|| mode == AVIN_SIGNAL_NTSC)
+	else if (mode == MSDK_AVIN_SIGNAL_PAL_M
+		|| mode == MSDK_AVIN_SIGNAL_NTSC)
 	{
 		::SetRect(&rc, 10, 4, 714, 486);		// 720X486
 		CMsdkRender::GetInstance()->SetVideoScaleAvin2(&rc);

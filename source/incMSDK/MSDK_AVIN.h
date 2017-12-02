@@ -37,7 +37,7 @@
 *
 * Filename:
 * ---------
-* file MSDK_DRM.h
+* file MSDK_AVIN.h
 *
 * Project:
 * --------
@@ -52,14 +52,14 @@
 *
 *
 *------------------------------------------------------------------------------
-* $Revision: #1 $
+* $Revision: #4 $
 * $Modtime:$
 * $Log:$
 *
 *******************************************************************************/
 
-#ifndef _MSDK_DRM_H_
-#define _MSDK_DRM_H_
+#ifndef _MSDK_AVIN_H_
+#define _MSDK_AVIN_H_
 
 #include <MSDK_Defs.h>
 
@@ -67,68 +67,55 @@
 extern "C" {
 #endif
 
+typedef enum
+{
+	AVIN_APP_ID_CAMERA = 0,
+	AVIN_APP_ID_AV_IN,
+	AVIN_APP_ID_ATV,
+	AVIN_APP_ID_IPOD,
+	AVIN_APP_ID_BACKARM2,
 
-/**
- * @addtogroup DRM
- *
- * @{
- */
+	AVIN_APP_ID_END,
+}E_AVIN_APP_ID;
 
+typedef enum
+{
+    MSDK_AVIN_FLIP_NONE,
+	MSDK_AVIN_FLIP_H,
+	MSDK_AVIN_FLIP_V,
+	MSDK_AVIN_FLIP_HnV
+} MSDK_AVIN_MIRROR_E;
 
-MRESULT     DRM_GetPBContext(HDRM *phDRM);
+typedef enum 
+{
+	MSDK_AVIN_SIGNAL_PAL_N,
+	MSDK_AVIN_SIGNAL_PAL,
+	MSDK_AVIN_SIGNAL_PAL_M,
+	MSDK_AVIN_SIGNAL_NTSC,
+	MSDK_AVIN_SIGNAL_SECAM,
+	MSDK_AVIN_SIGNAL_PAL_60,
+	MSDK_AVIN_SIGNAL_UNSTABLE,  // Represent video signal is not stable yet! In Hardware, it's reserved
+	MSDK_AVIN_SIGNAL_NTSC443,
+	MSDK_AVIN_SIGNAL_NONE
+}MSDK_AVIN_SIGNAL_MODE_T;
 
-MRESULT     DRM_ReleaseContext(HDRM hDRM);
-
-
-/**
-*   @brief  Init DRM system
-*
-*
-*   @return    MRESULT  define in msdk_error.h
-*
-*   @see     msdk_error.h
-**/
-MRESULT     DRM_InitSystem(HDRM hDRM);
-
-
-MRESULT     DRM_SetRandomSample(HDRM hDRM);
-
-
-/**
-*   @brief  Get balance for audio
-*
-*   @param[in]   hAudioCtrl handle of audio control
-*   @param[out]   pi4Balance integer pointer be used for store audio balance
-*
-*   @return    MRESULT  define in msdk_error.h
-*
-*
-*   @see     MediaGraph_QueryInterface()
-*   @see     msdk_error.h
-**/
-MRESULT     DRM_GetRegistrationCode(HDRM hDRM, TCHAR *szRegCode, GUINT32 u4BufSz);
-
-MRESULT     DRM_GetDeactivationCode(HDRM hDRM, TCHAR *szDeactCode, GUINT32 u4BufSz);
-
-MRESULT     DRM_QueryRentalStatus(HDRM hDRM, GUINT8 *puRentalMessageFlag,
-                                  GUINT8 *puUseLimit, GUINT8 *puUseCount);
-
-MRESULT     DRM_FinalizePlayback(HDRM hDRM);    
+MRESULT     AvinCtrl_SetHue(HMEDIAGRAPH hMediaGraph, GUINT32 u4Hue);
+MRESULT     AvinCtrl_SetBrightness(HMEDIAGRAPH hMediaGraph, GUINT32 u4Brightness);
+MRESULT     AvinCtrl_SetSaturation(HMEDIAGRAPH hMediaGraph, GUINT32 u4Saturation);
+MRESULT     AvinCtrl_SetMirror(HMEDIAGRAPH hMediaGraph, MSDK_AVIN_MIRROR_E eMirror);
+MRESULT AvinInfo_GetSignalMode(HMEDIAGRAPH hMediaGraph,MSDK_AVIN_SIGNAL_MODE_T *eSignalMode);
+MRESULT     AvinCtrl_SetAppID(HMEDIAGRAPH hMediaGraph, UINT32 eAppID);
+MRESULT     AvinCtrl_GetAppID(HMEDIAGRAPH hMediaGraph, UINT32 *peAppID);
+MRESULT     AvinCtrl_ChangeSignalMode(HMEDIAGRAPH hMediaGraph, UINT32 eSignalMode);
 
 
-MRESULT     DRM_IsDeviceActivated(GVOID);
-MRESULT     DRM_GetActivationStatus(GUINT8 *puUserId, GUINT32 *pu4UserIdLength);
-MRESULT     DRM_IsDeviceNeverRegistered(GVOID);
-MRESULT     DRM_GetRegCode(TCHAR *szRegCode, GUINT32 u4BufSz);
-MRESULT     DRM_GetDeregCode(TCHAR *szDeregCode, GUINT32 u4BufSz);
+MRESULT     AvinCtrl_OpenRDS(HMEDIAGRAPH hMediaGraph, E_MSDK_AVIN_AINDEX eAIndex);
+MRESULT     AvinCtrl_CloseRDS(HMEDIAGRAPH hMediaGraph, E_MSDK_AVIN_AINDEX eAIndex);
 
-
-/**
-*@}
-*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //_MSDK_DRM_H_
+#endif //_MSDK_AVIN_H_
+

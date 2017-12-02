@@ -52,7 +52,7 @@
 *
 *
 *------------------------------------------------------------------------------
-* $Revision: #2 $
+* $Revision: #6 $
 * $Modtime:$
 * $Log:$
 *
@@ -72,276 +72,180 @@ extern "C" {
 #endif
 
 /**
-  *@addtogroup PlaybackMechanism
+  *@addtogroup PlaybackMechanism 
  * @{
  *
  */
 
 /**
-*   @brief This method create media graph.
+*	@brief This method create media graph. 
 *
-*   @param[out]     phMediaGraph pointer to media graph handle.
+*	@param[out] 	phMediaGraph pointer to media graph handle.
 *
-*   @return MRESULT  define in msdk_error.h
-*
-*   @see    msdk_error.h
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	msdk_error.h
+*	@see	MEDIAGRAPH_T
 **/
 MRESULT     MediaGraph_Create(HMEDIAGRAPH *phMediaGraph);
 
 /**
-*   @brief This method release media graph.
+*	@brief This method release media graph. 
 *
-*   @param[in]  hMediaGraph media graph handle.
+*	@param[in] 	hMediaGraph media graph handle.
 *
-*   @return MRESULT  define in msdk_error.h
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
 *
-*   @see    MediaGraph_Create()
-*   @see    msdk_error.h
-*
-*   @note the method might be called while app exit.media graph will be destroyed,all inteface be released also.
+*	@note the method might be called while app exit.media graph will be destroyed,all inteface be released also.
 **/
 MRESULT     MediaGraph_Release(HMEDIAGRAPH hMediaGraph);
 
 /**
-*   @brief This method clear media graph.
+*	@brief This method clear media graph. 
 *
-*   @param[in]  hMediaGraph media graph handle.
+*	@param[in] 	hMediaGraph media graph handle.
 *
-*   @return MRESULT  define in msdk_error.h
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
 *
-*   @see    MediaGraph_Create()
-*   @see    msdk_error.h
-*
-*   @note the method might be called while stop play .mediagraph not be destroyed,but some members will be released .
+*	@note the method might be called while stop play .mediagraph not be destroyed,but some members will be released .
 **/
-MRESULT     MediaGraph_Clear(HMEDIAGRAPH hMediaGraph);
+MRESULT 	MediaGraph_Clear(HMEDIAGRAPH hMediaGraph);
 
 /**
-*   @brief This method set media graph config.repeat play and notify frequency
+*	@brief This method set media graph config.repeat play and notify frequency 
 *
-*   @param[in]  hMediaGraph media graph handle.
-*   @param[in]  prConfig config param for mediagraph
+*	@param[in] 	hMediaGraph media graph handle.
+*	@param[in]	prConfig config param for mediagraph
 *
-*   @return MRESULT  define in msdk_error.h
-*
-*   @see    MediaGraph_Create()
-*   @see    msdk_error.h
-*   @see    MG_CONFIG_T
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
+*	@see	MG_CONFIG_T
 **/
 MRESULT     MediaGraph_SetConfig(HMEDIAGRAPH hMediaGraph, MG_CONFIG_T *prConfig);
 
 /**
-*   @brief This method retrieves media graph config.
+*	@brief This method retrieves media graph config. 
 *
-*   @param[in]  hMediaGraph media graph handle.
-*   @param[out] prConfig current mediagraph config
+*	@param[in] 	hMediaGraph media graph handle.
+*	@param[out]	prConfig current mediagraph config
 *
-*   @return MRESULT  define in msdk_error.h
-*
-*   @see    MediaGraph_Create()
-*   @see    msdk_error.h
-*   @see    MG_CONFIG_T
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
+*	@see	MG_CONFIG_T
 **/
 MRESULT     MediaGraph_GetConfig(HMEDIAGRAPH hMediaGraph, MG_CONFIG_T *prConfig);
 
 /**
-*   @brief This method retrieves media graph state(play pause stop).
+*	@brief This method retrieves media graph state(play pause stop). 
 *
-*   @param[in]  hMediaGraph media graph handle.
-*   @param[out] peState current media graph state
+*	@param[in] 	hMediaGraph media graph handle.
+*	@param[out]	peState current media graph state
 *
-*   @return MRESULT  define in msdk_error.h
-*
-*   @see    MediaGraph_Create()
-*   @see    msdk_error.h
-*   @see    E_MSDK_MGSTATE
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
+*	@see	E_MSDK_MGSTATE
 **/
 MRESULT     MediaGraph_GetState(HMEDIAGRAPH hMediaGraph, E_MSDK_MGSTATE *peState);
 
 /**
-*   @brief This method query interface by IID.
+*	@brief This method query interface by IID. 
 *
-*   @param[in]  hMediaGraph media graph handle.
-*   @param[in]  pIID MSDK_IID marked
-*   @param[out] ppvInterface address of interface pointer
+*	@param[in] 	hMediaGraph media graph handle.
+*	@param[in]	pIID MSDK_IID marked 
+*	@param[out]	ppvInterface address of interface pointer
 *
-*   @return MRESULT  define in msdk_error.h
-*
-*   @see    MediaGraph_Create()
-*   @see    msdk_error.h
-*   @see    MSDK_IID
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
+*	@see	MSDK_IID
 **/
 MRESULT     MediaGraph_QueryInterface(HMEDIAGRAPH hMediaGraph, const MSDK_IID *pIID,
                                       GVOID **ppvInterface);
 
 /**
-*   @brief This method set media graph  source file.
+*	@brief This method set media graph  source file. 
 *
-*   @param[in]  hMediaGraph media graph handle.
-*   @param[in]  szFileName file path will be render
+*	@param[in] 	hMediaGraph media graph handle.
+*	@param[in]	szFileName file path will be render
 *
-*   @return MRESULT  define in msdk_error.h
-*
-*   @see    MediaGraph_Create()
-*   @see    msdk_error.h
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
 **/
 MRESULT     MediaGraph_SetSourceFile(HMEDIAGRAPH hMediaGraph, GTCHAR *szFileName);
 
+MRESULT     MediaGraph_SetSourceFileEx(HMEDIAGRAPH hMediaGraph, GTCHAR *szFileName);
 
 /**
-*   @brief This method force media progress stop.
+*	@brief This method force media progress stop. 
 *
-*   @param[in]  hMediaGraph media graph handle.
+*	@param[in] 	hMediaGraph media graph handle.
 *
-*   @return MRESULT  define in msdk_error.h
-*
-*   @see    MediaGraph_Create()
-*   @see    msdk_error.h
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
 **/
 MRESULT     MediaGraph_TerminateLoad(HMEDIAGRAPH hMediaGraph);
+MRESULT     MediaGraph_TerminateLoadAvin(HMEDIAGRAPH hMediaGraph);
+MRESULT     MediaGraph_GetVStmCnt(HMEDIAGRAPH hMediaGraph, UINT8 *u1VideoStreamCnt);
+MRESULT     MediaGraph_GetAVInfoLimitation(HMEDIAGRAPH hMediaGraph, E_MSDK_VIDEO_INFO_LIMITATION_T *pVInfo, E_MSDK_AUDIO_INFO_LIMITATION_T *pAInfo);
 
-/**
-*   @brief This method set media graph display target.
-*
-*   @param[in]  hMediaGraph media graph handle.
-*   @param[in]    eSiType  video display target to front ,rear or both
-*
-*   @return MRESULT  define in msdk_error.h
-*
-*   @see    MediaGraph_Create()
-*   @see    msdk_error.h
-**/
 
-MRESULT     MediaGraph_SetDataSink(HMEDIAGRAPH hMediaGraph,E_MSDK_SINK_TYPE eSiType);
+MRESULT     MediaGraph_GetIsSignalReady(HMEDIAGRAPH hMediaGraph, BOOL *fgIsSignalReady);
 
-/**
-*     @brief This method set media graph  display information.
-*
-*     @param[in]    hMediaGraph media graph handle.
-*     @param[in]    prSinkInfo config param for source
-*
-*     @return   MRESULT  define in msdk_error.h
-*
-*     @see       MediaGraph_Create()
-*     @see       msdk_error.h
-**/
+MRESULT MediaGraph_SetVideoInSource(HMEDIAGRAPH hMediaGraph, E_MSDK_AVIN_VINDEX eVIndex,
+                                    MSDK_AVIN_SINK_INFO_T *prSinkInfo);
+MRESULT MediaGraph_SetAudioInSource(HMEDIAGRAPH hMediaGraph,E_MSDK_AVIN_AINDEX eAIndex, 
+									MSDK_AVIN_SINK_INFO_T *prSinkInfo);
+MRESULT MediaGraph_SetAVInSource(HMEDIAGRAPH hMediaGraph,E_MSDK_AVIN_VINDEX eVIndex,
+								 E_MSDK_AVIN_AINDEX eAIndex, MSDK_AVIN_SINK_INFO_T *prSinkInfo);
 
-MRESULT     MediaGraph_SetSinkInfo (HMEDIAGRAPH hMediaGraph,MSDK_SINK_INFO_T *prSinkInfo);
+MRESULT MediaGraph_SetVideoInInfo(HMEDIAGRAPH hMediaGraph, MSDK_AVIN_SINK_INFO_T *prSinkInfo);
+MRESULT MediaGraph_SwitchAVInSink(HMEDIAGRAPH hMediaGraph,E_MSDK_SINK_TYPE eSinkType,E_MSDK_MODE eMode);
 
-/**
-*     @brief This method retrieves media infomation .
-*
-*     @param[in]    hMediaGraph media graph handle.
-*     @param[in]    prMediaInfo media infomation struct
-*
-*     @return   MRESULT  define in msdk_error.h
-*
-*     @see       MediaGraph_Create()
-*     @see       msdk_error.h
-**/
-MRESULT     MediaGraph_GetMediaInfo(HMEDIAGRAPH hMediaGraph,MSDK_MEDIA_INFO_T *prMediaInfo);
+MRESULT MediaGraph_GetAudioVOLInInfo(HMEDIAGRAPH hMediaGraph, MSDK_OUTPUT_VOL *prOutputVOLInfo, UINT16 uiSize);
+MRESULT MediaGraph_VdoInGetIsSignalReady(HMEDIAGRAPH hMediaGraph, BOOL *fgIsSignalReady);
+MRESULT MediaGraph_SetScale(HMEDIAGRAPH hMediaGraph,MSDK_SCALE_INFO_T *prScaleInfo);
 
-/**
-*     @brief This method just switch video destination .
-*
-*     @param[in]    hMediaGraph media graph handle.
-*     @param[in]    eSiType video destination
-*
-*     @return   MRESULT  define in msdk_error.h
-*
-*     @see       MediaGraph_Create()
-*     @see       msdk_error.h
-**/
+MRESULT MediaGraph_GetAudInSpec(HMEDIAGRAPH hMediaGraph, UINT32 *pu1SValues, UINT32 *pu1LValues);
 
 MRESULT MediaGraph_SwitchVideo(HMEDIAGRAPH hMediaGraph, E_MSDK_SINK_TYPE eSiType);
-MRESULT MediaGraph_GetDRMContext(HMEDIAGRAPH hMediaGraph, HDRM *phDRM);
 
 MRESULT MediaGraph_OpenAudio(HMEDIAGRAPH hMediaGraph, E_MSDK_SINK_TYPE eSiType);
 MRESULT MediaGraph_CloseAudio(HMEDIAGRAPH hMediaGraph, E_MSDK_SINK_TYPE eSiType);
 
-/**********************************************************************************************
-以下函数不建议使用,其功能可以有其他函数替代，在以后的版本中将被取消
-目前保留是为了兼容客户和公版
-************************************************************************************************/
-
 /**
-*@deprecated
-*     This function is deprecated.Consider using VideoInfo_GetCount instead
-**/
-DEPRECATED(VideoInfo_GetCount)
-MRESULT MediaGraph_GetVStmCnt(HMEDIAGRAPH hMediaGraph, UINT8 *u1VideoStreamCnt);
-
-/**
-*@deprecated
-*     This function is deprecated.Consider using AVIN_SetSource instead
-*@see AVIN.h
-*@see AVIN_SetSource
-**/
-DEPRECATED(AVIN_SetSource)
-MRESULT MediaGraph_SetVideoInSource(HMEDIAGRAPH hMediaGraph, E_MSDK_AVIN_VINDEX eVIndex,
-                                    MSDK_AVIN_SINK_INFO_T *prSinkInfo);
-/**
-*@deprecated
-*     This function is deprecated.Consider using AVIN_SetSource instead
-*@see AVIN.h
-*@see AVIN_SetSource
-**/
-DEPRECATED(AVIN_SetSource)
-MRESULT MediaGraph_SetAudioInSource(HMEDIAGRAPH hMediaGraph,E_MSDK_AVIN_AINDEX eAIndex,
-                                    MSDK_AVIN_SINK_INFO_T *prSinkInfo);
-
-/**
-*@deprecated
-*     This function is deprecated.Consider using AVIN_SetSource instead
-*@see AVIN.h
-*@see AVIN_SetSource
-**/
-DEPRECATED(AVIN_SetSource)
-MRESULT MediaGraph_SetAVInSource(HMEDIAGRAPH hMediaGraph,E_MSDK_AVIN_VINDEX eVIndex,
-                                 E_MSDK_AVIN_AINDEX eAIndex, MSDK_AVIN_SINK_INFO_T *prSinkInfo);
-/**
-*@deprecated
-*     This function is deprecated.Consider using AVIN_VideoInfo instead.
-*@see AVIN.h
-*@see AVIN_SetVideoInfo
-*@see AVIN_SetDestinationRec
-*@see AVIN_SetVideoVisiable
+*	@brief This method set media graph display target. 
 *
+*	@param[in] 	hMediaGraph media graph handle.
+*	@param[in]    eSiType  video display target to front ,rear or both
+*
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
 **/
-DEPRECATED(AVIN_SetVideoInfo)
-MRESULT MediaGraph_SetVideoInInfo(HMEDIAGRAPH hMediaGraph, MSDK_AVIN_SINK_INFO_T *prSinkInfo);
+MRESULT 	MediaGraph_SetDataSink(HMEDIAGRAPH hMediaGraph,E_MSDK_SINK_TYPE eSiType);
 
-/**
-*@deprecated
-*      This function is deprecated.Consider using AVIN_SetDestnation instead.
-*@see AVIN_SetDestination
-**/
-DEPRECATED(AVIN_SetDestnation)
-MRESULT MediaGraph_SwitchAVInSink(HMEDIAGRAPH hMediaGraph,E_MSDK_SINK_TYPE eSinkType,E_MSDK_MODE eMode);
+MRESULT 	MediaGraph_SetSinkInfo (HMEDIAGRAPH hMediaGraph,MSDK_SINK_INFO_T *prSinkInfo);
 
-/**
-*@deprecated
-*      This function is deprecated.Consider using AVIN_IsVideoSignalReady instead.
-*@see AVIN_IsVideoSignalReady
-**/
-DEPRECATED(AVIN_IsVideoSignalReady)
-MRESULT MediaGraph_VdoInGetIsSignalReady(HMEDIAGRAPH hMediaGraph, BOOL *fgIsSignalReady);
+MRESULT     MediaGraph_GetMediaInfo(HMEDIAGRAPH hMediaGraph,MSDK_MEDIA_INFO_T *prMediaInfo);
 
-/**
-*@deprecated
-*      This function is deprecated.Consider using AVIN_SetSourceRect instead.
-*@see AVIN_SetSourceRect
-**/
-DEPRECATED(AVIN_SetSourceRect)
-MRESULT MediaGraph_SetScale(HMEDIAGRAPH hMediaGraph,MSDK_SCALE_INFO_T *prScaleInfo);
-
-/**
-*@deprecated
-*     This function is deprecated.Consider using AVIN_GetSpectrum instead.
-*@see AVIN_GetSpectrum
-**/
-DEPRECATED(AVIN_GetSpectrum)
-MRESULT MediaGraph_GetAudInSpec(HMEDIAGRAPH hMediaGraph, UINT32 *pu1SValues, UINT32 *pu1LValues);
 
 
 /**

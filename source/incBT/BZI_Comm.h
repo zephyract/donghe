@@ -54,11 +54,11 @@
  *
  * Last changed:
  * ------------- 
- * $Author: dejun.liu $ 
+ * $Author: yu.mo $ 
  *
  * $Modtime: $  
  *
- * $Revision: #1 $
+ * $Revision: #2 $
 ****************************************************************************/
 #ifndef _BZI_COMM_H_
 #define _BZI_COMMH_

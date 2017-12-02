@@ -8,7 +8,7 @@
 #include "uibase.h"
 
 #define  DVP_LASTMEMORY_FILE_PATH	L"\\residentflash3\\app\\lastMem_dvp.txt"
-//const DWORD DVP_LM_START_ADDRESS = 0x006da300; 
+//const DWORD DVP_LM_START_ADDRESS = 0x0071d300;
 const int DVP_LM_SIZE = 256;
 typedef struct {
 	GTCHAR DVPLMInfo[DVP_LM_SIZE];
@@ -55,7 +55,7 @@ public:
 
 	// interface for rendering
 	// prectŒ™ø’ ±£¨¬˙∆¡œ‘ æ
-	void ShowVideo(BOOL bShow, RECT* prect=NULL, DVD_SINK_T sink=DVD_SINK_FRONT);
+	void ShowVideo(BOOL bShow, RECT* prect=NULL, SWI_SINK_T sink=SWI_SINK_FRONT);
 	void SetSink(DVP_SINK sink_type);
 	void Play();
 	void Pause();

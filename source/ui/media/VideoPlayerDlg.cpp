@@ -298,14 +298,14 @@ void CVideoPlayerDlg::OnErrorOccured(UINT param1, UINT param2)
 {
 	ShowFileTip();	// error发生时不会触发OnGraphBuilt()
 
-	if (param1 != E_MSDK_OUT_OF_MEMORY)
+	if (param1 != E_MSDK_OUTOFMEMORY)
 	{
-		if (param1 == E_MSDK_UNSUPPORTED_STREAM_VIDEO)
+		if (param1 == E_MSDK_UNSUPPORTED_VIDEO)
 		{
 			//ShowBadfileTipInfo(TRUE, L"MIS_UNSUPPORTED_VIDEO");
 			COverlayDlg::GetInstance()->MessageTip_ShowUI(L"MIS_UNSUPPORTED_VIDEO", TRUE, 1000);
 		}
-		else if (param1 == E_MSDK_UNSUPPORTED_STREAM_AUDIO)
+		else if (param1 == E_MSDK_UNSUPPORTED_AUDIO)
 		{
 			//ShowBadfileTipInfo(TRUE, L"MIS_UNSUPPORTED_AUDIO");
 			COverlayDlg::GetInstance()->MessageTip_ShowUI(L"MIS_UNSUPPORTED_AUDIO", TRUE, 1000);

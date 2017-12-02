@@ -3,7 +3,7 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
-/* @(#) $Id: //CNB/MT3360/MAIN_MP5_BR/CE60/SDK/Misc/Include/zconf.h#1 $ */
+/* @(#) $Id: //CNB/MT3360/CUST_BR/YECON_MT3360_CE60/SDK/Misc/Include/zconf.h#1 $ */
 
 #ifndef ZCONF_H
 #define ZCONF_H
@@ -284,6 +284,14 @@ typedef uLong FAR uLongf;
    typedef Byte       *voidp;
 #endif
 
+#if 0           /* HAVE_UNISTD_H -- this line is updated by ./configure */
+#  include <sys/types.h> /* for off_t */
+#  include <unistd.h>    /* for SEEK_* and off_t */
+#  ifdef VMS
+#    include <unixio.h>   /* for off_t */
+#  endif
+#  define z_off_t off_t
+#endif
 #ifndef SEEK_SET
 #  define SEEK_SET        0       /* Seek from beginning of file.  */
 #  define SEEK_CUR        1       /* Seek from current position.  */

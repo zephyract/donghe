@@ -63,7 +63,9 @@
   #define GB_ASSERT_DEBUG      0
   #define GB_MEMORY_DIAGNOSE   0
   #define GB_LOGGER_ENABLE     0
-  #if defined(WIN32)
+  #ifdef MTK_FP
+    #define GB_CRTMEM_ADAPTOR    1  // FP  : can't set to 0
+  #elif defined(WIN32)
     #define GB_CRTMEM_ADAPTOR    0  // PND : set to 0 will increase performance
   #endif
   #define GB_STACK_CHECK       0
@@ -71,7 +73,7 @@
 #endif
 
 
-#define AVSSET                    1
+#define AVSSET					1
 
 #endif  // #ifndef _GCFG_H_
 

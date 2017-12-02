@@ -53,11 +53,11 @@
  *
  * Last changed:
  * ------------- 
- * $Author: dejun.liu $ 
+ * $Author: yongguang.hong $ 
  *
  * $Modtime: $  
  *
- * $Revision: #1 $
+ * $Revision: #4 $
 ****************************************************************************/
 
 #ifndef _BZI_MUSIC_H_

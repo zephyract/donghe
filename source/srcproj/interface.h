@@ -147,7 +147,7 @@ const UINT NAVI_MSG_APP_UPDATE_START = ::RegisterWindowMessage(L"GPSAPP_UPDATE_S
 ***************************************************************************/
 #define UI_MSG_MSDK_MEDIAGRAPH_FILE		(WM_USER + 50)
 // MSDK AVIN时，事件通知消息
-#define UI_MSG_MSDK_MEDIAGRAPH_AVIN1		(WM_USER + 51)
+#define UI_MSG_MSDK_MEDIAGRAPH_AVIN		(WM_USER + 51)
 // DVD播放时时，事件通知消息
 #define UI_MSG_DVP_AGENT				(WM_USER + 52)
 // wma
@@ -155,11 +155,6 @@ const UINT NAVI_MSG_APP_UPDATE_START = ::RegisterWindowMessage(L"GPSAPP_UPDATE_S
 
 // 通知有个文件要播放了
 #define UI_MSG_MSDK_PLAY_FILE			(WM_USER + 54)
-
-#define UI_MSG_MSDK_MEDIAGRAPH_AVIN2	(WM_USER + 55)
-#define UI_MSG_MSDK_MEDIAGRAPH_AVIN_CAMERA	(WM_USER + 56)	// 倒车
-#define UI_MSG_MSDK_MEDIAGRAPH_AVIN_TV	(WM_USER + 57)	// 倒车
-// 如果用到其它通道,继续定义
 
 /***************************************************************************
 *                                  BT 	                                   *

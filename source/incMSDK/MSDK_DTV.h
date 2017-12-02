@@ -52,7 +52,7 @@
 *
 *
 *------------------------------------------------------------------------------
-* $Revision: #1 $
+* $Revision: #5 $
 * $Modtime:$
 * $Log:$
 *
@@ -78,6 +78,7 @@ typedef     GVOID *         HSERVICELIST;
 #define MSDK_DTV_SIANO_OK      0
 #define MSDK_SVC_NAME_MAX_LEN  32
 #define MSDK_EPG_EVT_NAME_LEN  64
+
 #define DTVAPI _declspec(dllexport)
 
 enum
@@ -250,7 +251,8 @@ typedef struct
 *   @see    MediaGraph_FindRenderFilter()
 *   @see    msdk_error.h
 **/
-DTVAPI MRESULT      MediaGraph_FindRenderFilter(HMEDIAGRAPH hMediaGraph);
+DTVAPI MRESULT MediaGraph_FindRenderFilter(HMEDIAGRAPH hMediaGraph);
+
 
 /**
 *     @brief This method open media graph display. 
@@ -262,6 +264,7 @@ DTVAPI MRESULT      MediaGraph_FindRenderFilter(HMEDIAGRAPH hMediaGraph);
 *     @see       MediaGraph_Create()
 *     @see       msdk_error.h
 **/
+
 DTVAPI MRESULT     MediaGraph_OpenAvs(HMEDIAGRAPH hMediaGraph);
 
 /**
@@ -512,6 +515,7 @@ DTVAPI MRESULT EpgCtrl_SetPageCnt(UINT32 u4PageCnt);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_GetEvtCnt(HEPGCTRL hEpgCtrl, UINT32 *pu4EpgCnt);
 
 /**
@@ -527,6 +531,7 @@ DTVAPI MRESULT EpgCtrl_GetEvtCnt(HEPGCTRL hEpgCtrl, UINT32 *pu4EpgCnt);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_GetEvtInfo(HEPGCTRL hEpgCtrl, INT32 i4Idx, MSDK_EPGINFO_T *prEpgInfo);
 
 /**
@@ -542,6 +547,7 @@ DTVAPI MRESULT EpgCtrl_GetEvtInfo(HEPGCTRL hEpgCtrl, INT32 i4Idx, MSDK_EPGINFO_T
 *
 *    @note    after getting epg info ,please free epg info next.
 **/
+
 DTVAPI MRESULT EpgCtrl_FreeEvtInfo(HEPGCTRL hEpgCtrl, MSDK_EPGINFO_T *prEpgInfo);
 
 /**
@@ -558,6 +564,7 @@ DTVAPI MRESULT EpgCtrl_FreeEvtInfo(HEPGCTRL hEpgCtrl, MSDK_EPGINFO_T *prEpgInfo)
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_GotoPrevPg(HEPGCTRL hEpgCtrl, UINT8 u1FocusIdx);
 
 /**
@@ -572,6 +579,7 @@ DTVAPI MRESULT EpgCtrl_GotoPrevPg(HEPGCTRL hEpgCtrl, UINT8 u1FocusIdx);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_GotoNextPg(HEPGCTRL hEpgCtrl, UINT8 u1FocusIdx);
 
 /**
@@ -586,6 +594,7 @@ DTVAPI MRESULT EpgCtrl_GotoNextPg(HEPGCTRL hEpgCtrl, UINT8 u1FocusIdx);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_GotoNextDay(HEPGCTRL hEpgCtrl, UINT8 u1FocusIdx);
 
 /**
@@ -600,6 +609,7 @@ DTVAPI MRESULT EpgCtrl_GotoNextDay(HEPGCTRL hEpgCtrl, UINT8 u1FocusIdx);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_GotoPrevDay(HEPGCTRL hEpgCtrl, UINT8 u1FocusIdx);
 
 /**
@@ -614,6 +624,7 @@ DTVAPI MRESULT EpgCtrl_GotoPrevDay(HEPGCTRL hEpgCtrl, UINT8 u1FocusIdx);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_IsFirstPage(HEPGCTRL hEpgCtrl, BOOL *pfgFirst);
 
 /**
@@ -628,6 +639,7 @@ DTVAPI MRESULT EpgCtrl_IsFirstPage(HEPGCTRL hEpgCtrl, BOOL *pfgFirst);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_IsLastPage(HEPGCTRL hEpgCtrl, BOOL *pfgLast);
 
 /**
@@ -642,6 +654,7 @@ DTVAPI MRESULT EpgCtrl_IsLastPage(HEPGCTRL hEpgCtrl, BOOL *pfgLast);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_CheckPrevDay(HEPGCTRL hEpgCtrl,BOOL *pfgPrevDay);
 
 /**
@@ -656,6 +669,7 @@ DTVAPI MRESULT EpgCtrl_CheckPrevDay(HEPGCTRL hEpgCtrl,BOOL *pfgPrevDay);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT EpgCtrl_CheckNextDay(HEPGCTRL hEpgCtrl,BOOL *pfgNextDay);
 
 /**
@@ -680,6 +694,7 @@ DTVAPI MRESULT EpgCtrl_CheckNextDay(HEPGCTRL hEpgCtrl,BOOL *pfgNextDay);
 *    @note    If the servicelist named szSvlName has existed,it will only open the servicelist.
 *                 if not,will created a new servicelist.
 **/
+
 DTVAPI MRESULT SvlDb_CreateTvSvl(HSVLDB  hSvlDb, const CHAR *szSvlName, HSERVICELIST *phServiceList);
 
 /**
@@ -694,6 +709,7 @@ DTVAPI MRESULT SvlDb_CreateTvSvl(HSVLDB  hSvlDb, const CHAR *szSvlName, HSERVICE
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_GetRealSvl(HSVLDB  hSvlDb, HSERVICELIST *phServiceList);
 
 /**
@@ -707,6 +723,7 @@ DTVAPI MRESULT SvlDb_GetRealSvl(HSVLDB  hSvlDb, HSERVICELIST *phServiceList);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_Save(HSVLDB  hSvlDb);
 
 /**
@@ -720,6 +737,7 @@ DTVAPI MRESULT SvlDb_Save(HSVLDB  hSvlDb);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_CleanSvl(HSERVICELIST hServiceList);
 
 /**
@@ -734,6 +752,7 @@ DTVAPI MRESULT SvlDb_CleanSvl(HSERVICELIST hServiceList);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_AddSvc(HSERVICELIST hServiceList, const MSDK_SVCREC_T *prSvcRec);
 
 /**
@@ -749,6 +768,7 @@ DTVAPI MRESULT SvlDb_AddSvc(HSERVICELIST hServiceList, const MSDK_SVCREC_T *prSv
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_GetFreq(HSERVICELIST hServiceList, const MSDK_SVCREC_T *ptSvcRec, UINT32* pu4Freq);
 
 /**
@@ -763,6 +783,7 @@ DTVAPI MRESULT SvlDb_GetFreq(HSERVICELIST hServiceList, const MSDK_SVCREC_T *ptS
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_RemoveSvcByIndex(HSERVICELIST hServiceList, INT32 i4Idx);
 
 /**
@@ -776,6 +797,7 @@ DTVAPI MRESULT SvlDb_RemoveSvcByIndex(HSERVICELIST hServiceList, INT32 i4Idx);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_SortByChannelNum(HSERVICELIST hServiceList);
 
 /**
@@ -790,6 +812,7 @@ DTVAPI MRESULT SvlDb_SortByChannelNum(HSERVICELIST hServiceList);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_RemoveSvcByFreq(HSERVICELIST hServiceList, UINT32 u4Freq);
 
 /**
@@ -805,6 +828,7 @@ DTVAPI MRESULT SvlDb_RemoveSvcByFreq(HSERVICELIST hServiceList, UINT32 u4Freq);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_UpdateSvc(HSERVICELIST hServiceList, INT32 i4Idx, const MSDK_SVCREC_T *ptSvcRec);
 
 /**
@@ -820,6 +844,7 @@ DTVAPI MRESULT SvlDb_UpdateSvc(HSERVICELIST hServiceList, INT32 i4Idx, const MSD
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_GetSvc(HSERVICELIST hServiceList, INT32 i4Idx, MSDK_SVCREC_T *ptSvcRec);
 
 /**
@@ -834,6 +859,7 @@ DTVAPI MRESULT SvlDb_GetSvc(HSERVICELIST hServiceList, INT32 i4Idx, MSDK_SVCREC_
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_GetSvlCount(HSERVICELIST hServiceList, UINT32 *pu4SvlCount);
 
 /**
@@ -849,6 +875,7 @@ DTVAPI MRESULT SvlDb_GetSvlCount(HSERVICELIST hServiceList, UINT32 *pu4SvlCount)
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_AddFavSvcByIdx(HSVLDB  hSvlDb, HSERVICELIST hServiceList, INT32 i4Idx);
 
 /**
@@ -863,6 +890,7 @@ DTVAPI MRESULT SvlDb_AddFavSvcByIdx(HSVLDB  hSvlDb, HSERVICELIST hServiceList, I
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_AddFavSvcByRec(HSVLDB  hSvlDb, const MSDK_SVCREC_T *ptSvcRec);
 
 /**
@@ -877,6 +905,7 @@ DTVAPI MRESULT SvlDb_AddFavSvcByRec(HSVLDB  hSvlDb, const MSDK_SVCREC_T *ptSvcRe
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_RemoveFavorite(HSVLDB  hSvlDb, INT32 i4Idx);
 
 /**
@@ -891,6 +920,7 @@ DTVAPI MRESULT SvlDb_RemoveFavorite(HSVLDB  hSvlDb, INT32 i4Idx);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_GetFavoriteCnt(HSVLDB  hSvlDb, UINT32 *pu4FavCount);
 
 /**
@@ -906,6 +936,7 @@ DTVAPI MRESULT SvlDb_GetFavoriteCnt(HSVLDB  hSvlDb, UINT32 *pu4FavCount);
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SvlDb_GetFavorite(HSVLDB  hSvlDb, INT32 i4Idx, MSDK_SVCREC_T *ptSvcRec);
 
 /**
@@ -928,6 +959,7 @@ DTVAPI MRESULT SvlDb_GetFavorite(HSVLDB  hSvlDb, INT32 i4Idx, MSDK_SVCREC_T *ptS
 *    @see     msdk_error.h
 *
 **/
+
 DTVAPI MRESULT SnapshotCtl_PrintScreen(HSNAPSHOTCTRL hSnapshot, E_MSDK_PIXEL_FORMAT tPixelFmt, const GTCHAR *pszSnapshotName);
 #endif 
 /**

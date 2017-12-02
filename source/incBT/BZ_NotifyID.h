@@ -53,11 +53,11 @@
  *
  * Last changed:
  * ------------- 
- * $Author: dejun.liu $ 
+ * $Author: xiaozhou.huang $ 
  *
  * $Modtime: $  
  
- * $Revision: #1 $
+ * $Revision: #11 $
 ****************************************************************************/
 
 
@@ -137,6 +137,8 @@ typedef enum _tag_BTCALLBACK_MODULE
 #define BZ_IND_ANSWER_CALL_FAIL                 BZIND_CODE( BZ_MODULE_CALL, 11 )
 #define BZ_IND_ACCEPT_CALL                      BZIND_CODE( BZ_MODULE_CALL, 12 )
 #define BZ_IND_VOICE_RECOGNITION                BZIND_CODE( BZ_MODULE_CALL, 13 )
+#define BZ_IND_CALL_HELD                        BZIND_CODE( BZ_MODULE_CALL, 14 )
+#define BZ_IND_MULTI_CALL_STATE_CHANGED         BZIND_CODE( BZ_MODULE_CALL, 15 )
 #define BZ_IND_HEADSET_AG_CONNECTED             BZIND_CODE( BZ_MODULE_CALL, 30 )
 #define BZ_IND_HEADSET_AG_DISCONNECTED          BZIND_CODE( BZ_MODULE_CALL, 31 )
 #define BZ_IND_HEADSET_AG_AUDIO_ON              BZIND_CODE( BZ_MODULE_CALL, 32 )
@@ -189,6 +191,7 @@ typedef enum _tag_BTCALLBACK_MODULE
 // Indication related to the Signal and Battery
 #define BZ_IND_SIGNAL_LEVEL_CHANGED             BZIND_CODE( BZ_MODULE_SIGNAL_BATTERY, 1 )
 #define BZ_IND_BATTERY_LEVEL_CHANGED            BZIND_CODE( BZ_MODULE_SIGNAL_BATTERY, 2 )
+#define BZ_IND_SERVICE_AVAILABILITY_CHANGED     BZIND_CODE( BZ_MODULE_SIGNAL_BATTERY, 3 )
 
 // Indication related to the SMS
 #define BZ_IND_SMS_NOT_SUPPORT                  BZIND_CODE( BZ_MODULE_SMS, 1 )

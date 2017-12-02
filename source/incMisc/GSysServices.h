@@ -52,7 +52,7 @@
 *
 *
 *------------------------------------------------------------------------------
-* $Revision: #3 $
+* $Revision: #10 $
 * $Modtime:$
 * $Log:$
 *
@@ -65,6 +65,9 @@
 #include "GDef.h"
 #include "GKal.h"
 #include "winioctl.h"
+#include "avswi_err.h"
+#include "avswi_def.h"
+#include "avswi_pub.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -80,7 +83,6 @@ extern "C" {
 #define MISC_SET_PL2			1
 #define	MISC_SET_SRS			1
 #define	MISC_CLIENT_SET_GAIN	1
-
 
 typedef enum
 {
@@ -179,8 +181,7 @@ typedef enum{
 	CFG_EQ_LIVING,
 	CFG_EQ_DANCE,
 	CFG_EQ_CLASSICAL,
-	CFG_EQ_SOFT,
-	CFG_EQ_USER
+	CFG_EQ_SOFT
 }EQTYPE_T;
 
 typedef enum
@@ -210,10 +211,6 @@ typedef enum{
 	CFG_REVERB_BATHROOM,
 	CFG_REVERB_ARENA
 }REVERBTYPE_T;
-
-typedef struct _tagAUD_DEC_EQ_TYPE_IIR_COEF_T {
-    UINT32 u4IirCoef[2][30]; 
-} AUD_DEC_EQ_TYPE_IIR_COEF_T;
 
 #define MISC_REVERB_FS_CNT            (3)         // support 3 sample rate type 32/44/48
 #define MISC_REVERB_BANK_CNT          (4)         // reverb bank count 4
@@ -277,6 +274,7 @@ typedef struct _MISC_MVS_GAIN_T
 	GUINT32		u4InputGain;
 	GUINT32		u4VRPhase;
 }MISC_MVS_GAIN_T;
+
 
 /*---------------------------For Aud Output-------------------------*/
 typedef enum{
@@ -382,8 +380,12 @@ typedef enum
     BALANCE_FRONT_RIGHT,
     BALANCE_REAR_LEFT,
     BALANCE_REAR_RIGHT,
-    BALANCE_CENTER,
-    BALANCE_SUB_WOOFER
+    BALANCE_CENTER,    
+    BALANCE_SUB_WOOFER,
+    BALANCE_SPK_AUX1,                  //back left
+    BALANCE_SPK_AUX2,                  //back right
+    BALANCE_SPK_DOWNMIX_LEFT,
+    BALANCE_SPK_DOWNMIX_RIGHT  
 }BALANCE_CHANGE_TYPE;
 
 typedef enum
@@ -418,11 +420,16 @@ typedef enum
     MISC_TEST_TONE_PINK_NOISE_DOLBY  
 } MISC_TEST_TONE_TYPE_T;
 
-#define DISPLAY_SET_CONTRAST                     (0x00020005)
-#define DISPLAY_SET_BRIGNTNESS                   (0x00020006)
-#define DISPLAY_SET_BKL_INTENSITY                (0x00020008)
-#define DISPLAY_SET_SATUREATION					 (0x00020007)
-#define DISPLAY_SET_HUE							 (0x00020009)
+#define DISPLAY_SET_CONTRAST                    (0x00020005)
+#define DISPLAY_SET_BRIGNTNESS                  (0x00020006)
+#define DISPLAY_SET_SATUREATION				    (0x00020007)
+#define DISPLAY_SET_BKL_INTENSITY               (0x00020008)
+#define DISPLAY_SET_HUE						    (0x00020009)
+
+#define IOCTL_DISPLAY_GET_CONTRAST              (0x20011)
+#define IOCTL_DISPLAY_GET_BRIGHTNESS            (0x20012)
+#define IOCTL_DISPLAY_GET_SATURATION            (0x20013)
+#define IOCTL_DISPLAY_GET_HUE                   (0x20014)
 
 //choose spdif output
 typedef enum {
@@ -477,123 +484,6 @@ typedef struct _MISC_AUD_THRESHOLD
 	UINT32 u4WaveFormThrshld;
 }MISC_AUD_THRESHOLD_T;
 
-typedef enum
-{
-    MISC_AUD_LS_FRONT_L = 0,
-    MISC_AUD_LS_FRONT_R,
-    MISC_AUD_LS_FRONT_LS,
-    MISC_AUD_LS_FRONT_RS,
-    MISC_AUD_LS_FRONT_C,
-    MISC_AUD_LS_FRONT_SUB,
-    MISC_AUD_LS_FRONT_SPDIF_PCM_L,
-    MISC_AUD_LS_FRONT_SPDIF_PCM_R,
-    MISC_AUD_LS_REAR_L,
-    MISC_AUD_LS_REAR_R
-}MISC_AUD_LS_CH_T;
-
-
-typedef enum
-{
-    RET_GSERVICE_ERROR,
-    RET_GSERVICE_OK 
-} GSERVICE_ERR_T;
-
-
-typedef enum
-{
-    AUD_SE_ATS_SWITCH_OFF = 0,
-    AUD_SE_ATS_SWITCH_ON
-}AUD_SE_ATS_SWITCH_T;
-
-
-
-typedef enum
-{
-    AUD_SE_ATS_MODE_OFF = 0x0, //关闭AutoSurround
-    AUD_SE_ATS_MODE_ON = 0x1, //开启AutoSurround
-    AUD_SE_ATS_MONO_MODE = 0x1<<8,    //Mono模式 (当Source文件是单声道文件时开启)
-    AUD_SE_ATS_DO_LSRS_DECORRELATION = 0x01<<16, //开启LSRS decorrelation filter.
-}AUD_SE_ATS_MODE_T;
-
-
-typedef struct AUD_SE_ATS_COEF_T
-{
-    UINT32 u4CtrlMode;
-    UINT32 u4InputGain;     //Input Gain. 0dB: 0x20000.                      
-    UINT32 u4CenterGain;    //Center Output Gain. 0dB: 0x20000.
-    UINT32 u4LRGain;        //LR output Gain. 0dB: 0x20000.
-    UINT32 u4LsRsGain;      //LsRs output Gain. 0dB: 0x20000
-    UINT32 u4LfeGain;       //LFE output Gain. 0dB: 0x20000
-    UINT32 u4CenterInGain;  //Center input Gain. 0dB: 0x20000
-    UINT32 u4LfeInGain;     //LFE input Gain. 0dB: 0x20000
-    UINT32 u4LsRsInGain;    //LsRs input Gain. 0dB: 0x20000  
-    UINT32 u4C2LRGain;      //Center Mix to LR Gain. 0dB:0x7FFFFF, 0~0x7FFFFF
-    UINT32 u4C2LsRsGain;    //Center Mix to LsRs Gain. 0dB:0x7FFFFF, 0~0x7FFFFF
-    UINT32 u4Lr2LsRsGain;   //LR Mix to LsRs Gain. 0dB:0x7FFFFF, 0~0x7FFFFF
-    UINT32 u4OverallDelay;  //LsRs channel的Delay Time. 0~20 banks. each banks 1.33ms.    
-    UINT32 u4FrontSpkSize;  //set front Speaker size: 0~12, 40/50/60/70/80/90/100/120/160/200/250/300/400Hz
-    UINT32 u4SurrSpkSize;   //Surround Channel(LsRs) Speaker size 0~12, 40/50/60/70/80/90/100/120/160/200/250/300/400Hz
-    UINT32 u4FrontBassLevel; //Front Speaker bass Level,0~14 0~14dB
-    UINT32 u4SurrBassLevel;  //Surround Speaker低音增强Level,0~14对应0~14dB
-    UINT32 u4FrontMiddleLevel; //Front Speaker中音增强Level,0~14对应0~14dB
-    UINT32 u4SurrMiddleLevel; //Rear Speaker中音增强Level,0~14对应0~14dB
-} AUD_SE_ATS_COEF_T;
-
-
-typedef enum
-{
-    AUD_SE_ATS_CTRL_SWITCH = 1,
-    AUD_SE_ATS_CTRL_MODE,         
-    AUD_SE_ATS_INPUT_GAIN,
-    AUD_SE_ATS_CENTER_OUTPUT_GAIN ,
-    AUD_SE_ATS_LR_OUTPUT_GAIN ,
-    AUD_SE_ATS_LSRS_OUTPUT_GAIN ,
-    AUD_SE_ATS_LFE_OUTPUT_GAIN ,
-    AUD_SE_ATS_CENTER_INPUT_GAIN ,
-    AUD_SE_ATS_LFE_INPUT_GAIN ,
-    AUD_SE_ATS_LSRS_INPUT_GAIN ,
-    AUD_SE_ATS_C_2_LR_GAIN , 
-    AUD_SE_ATS_C_2_LSRS_GAIN ,
-    AUD_SE_ATS_LR_2_LSRS_GAIN ,
-    AUD_SE_ATS_SURROUND_DELAY,
-    AUD_SE_ATS_FRONT_SPK_SIZE,
-    AUD_SE_ATS_SURR_SPK_SIZE,
-    AUD_SE_ATS_FRONT_BASS_LEVEL,
-    AUD_SE_ATS_SURR_BASS_LEVEL,
-    AUD_SE_ATS_FRONT_MIDDLE_LEVEL,
-    AUD_SE_ATS_SURR_MIDDLE_LEVEL,
-    AUD_SE_ATS_SETTING_END,
-}AUD_SE_ATS_CTRL_T;
-
-
-typedef struct AUD_SE_ATS_CTRL_INFO_TAG
-{
-    AUD_SE_ATS_CTRL_T    e_ctrlID; /* IN */
-    union {
-        AUD_SE_ATS_SWITCH_T e_ats_switch;
-        UINT32 u4CtrlMode;   
-        UINT32 u4InputGain;                         
-        UINT32 u4CenterGain;
-        UINT32 u4LRGain;
-        UINT32 u4LsRsGain;
-        UINT32 u4LfeGain;
-        UINT32 u4CenterInGain;
-        UINT32 u4LfeInGain;
-        UINT32 u4LsRsInGain;    
-        UINT32 u4C2LRGain;
-        UINT32 u4C2LsRsGain;
-        UINT32 u4Lr2LsRsGain;  
-        UINT32 u4OverallDelay;  
-        UINT32 u4FrontSpkSize;  
-        UINT32 u4SurrSpkSize;   
-        UINT32 u4FrontBassLevel; 
-        UINT32 u4SurrBassLevel;  
-        UINT32 u4FrontMiddleLevel; 
-        UINT32 u4SurrMiddleLevel; 
-    } u;
-} AUD_SE_ATS_CTRL_INFO_T;
-
-
 #define   DOLBY_DECODE_2CH_SETTING              0x80      //Dolby AC3 2channel
 #define   DOLBY_DECODE_MULTI_CH_SETTING         0x00      //Dolby AC3 multi channel
 
@@ -646,7 +536,9 @@ GUINT32  GSetBrightnessLevel(GUINT32 u4Level);
 * @note pu4Level to get between 0 and 100
 *
 **/
-GUINT32  GGetBrightnessLevel(GUINT32 *pu4Level); 
+GUINT32  GGetBrightnessLevel(GUINT32 *pu4Level);
+
+GINT32 GGetBrightnessFromHW(GUINT32 *pu4Level);
 
 /**
 * @brief set contrast level and save in regedit
@@ -671,6 +563,8 @@ GUINT32  GSetContrastLevel(GUINT32 u4Level);
 *
 **/
 GUINT32  GGetContrastLevel(GUINT32 *pu4Level); 
+
+GINT32 GGetContrastFromHW(GUINT32 *pu4Level);
 
 /**
 * @brief set backlight level  and save in regedit
@@ -721,6 +615,8 @@ GUINT32  GSetHueLevel(GUINT32 u4Level);
 **/
 GUINT32  GGetHueLevel(GUINT32 *pu4Level); 
 
+GINT32 GGetHueFromHW(GUINT32 *pu4Level);
+
 /**
 * @brief set saturation level and save in regedit
 *
@@ -744,6 +640,8 @@ GUINT32  GSetSaturationLevel(GUINT32 u4Level);
 *
 **/
 GUINT32  GGetSaturationLevel(GUINT32 *pu4Level); 
+
+GINT32 GGetSaturationFromHW(GUINT32 *pu4Level);
 
 /**
 * @brief  set backlight on/off
@@ -829,7 +727,7 @@ GUINT32 GSetVolume(GHANDLE hAudioDev,GUINT32  u4Vol);
 GUINT32 GGetVolume(GHANDLE hAudioDev,GUINT32  *pu4Vol);
 
 /**
-* @brief  set audio channel type and save in regedit
+* @brief  set audio channel type
 *
 * @param[in] hAudioDev audio device handle 
 * @param[in] eChannelType the channel type value to be set
@@ -886,6 +784,29 @@ GUINT32 GSetTestTone(GHANDLE hAudioDev, AUD_TEST_TONE_T eTestTone);
 GUINT32 GGetTestTone(GHANDLE hAudioDev, AUD_TEST_TONE_T *peTestTone);
 
 /**
+* @brief  set audio EQ on the specified band and save in regedit
+*
+* @param[in] hAudioDev audio device handle 
+* @param[in] u4Band the band value
+* @param[in] i4Value the EQ value on u4Band
+*
+* @return 1 indicate success, 0 indicate fail
+*
+**/
+GUINT32 GSetEQValue(GHANDLE hAudioDev,GUINT u4Band,GINT32 i4Value);
+/**
+* @brief  get audio EQ value on the specified band
+*
+* @param[in] hAudioDev audio device handle 
+* @param[in] u4Band  the band value
+* @param[out] pi4Value pointer to the EQ value on u4Band
+*
+* @return 1 indicate success, 0 indicate fail
+*
+**/
+GUINT32 GGetEQValue(GHANDLE hAudioDev,GUINT u4Band,GINT32* pi4Value);
+
+/**
 * @brief  set audio EQ on all band and save in regedit
 *
 * @param[in] hAudioDev audio device handle 
@@ -908,6 +829,88 @@ GUINT32 GSetEQValues(GHANDLE hAudioDev, AUD_EQVALUES_T rEQValues);
 GUINT32 GGetEQValues(GHANDLE hAudioDev, AUD_EQVALUES_T* prEQValues);
 
 /**
+* @brief  set audio EQ bound on the specified band
+*
+* @param[in] hAudioDev audio device handle 
+* @param[in] u4Band the band value
+* @param[in] u4mix_value the min value
+* @param[in] u4max_value the max value
+*
+* @return GUINT32 define in GDef.h
+*
+**/
+GUINT32 GSetEQBounds(GHANDLE hAudioDev,
+					 GUINT u4Band,
+					 GUINT32 u4mix_value,
+					 GUINT32 u4max_value);
+
+/**
+* @brief  get audio EQ bounds on the specified band
+*
+* @param[in] hAudioDev audio device handle 
+* @param[in] u4Band the band value
+* @param[out] pu4mix_value GUINT32 * the min value
+* @param[out] pu4max_value GUINT32 * the max value
+*
+* @return GUINT32 define in GDef.h
+*
+**/
+GUINT32 GGetEQBounds(GHANDLE hAudioDev,
+					 GUINT u4Band,
+					 GUINT32 *pu4mix_value,
+					 GUINT32 *pu4max_value);
+
+/**
+* @brief  get EQ nums
+*
+* @param[in] hAudioDev audio device handle 
+* @param[out] pu4BandsNum GUINT * the band nums
+*
+* @return GUINT32 define in GDef.h
+*
+**/
+GUINT32 GGetEQBands(GHANDLE hAudioDev,GUINT *pu4BandsNum);
+
+/**
+* @brief  query spectrum on the specified band
+*
+* @param[in] hAudioDev audio device handle 
+* @param[in] u4Band the band value
+* @param[out] u4Values GUINT32* the spectrum value
+*
+* @return GUINT32 define in GDef.h
+*
+**/
+GUINT32 GQuerySpectrum(GHANDLE hAudioDev,GUINT u4Band,GUINT32* u4Values);
+
+/**
+* @brief  query spectrum bounds on the specified band
+*
+* @param[in] hAudioDev audio device handle 
+* @param[in] u4Band the band value
+* @param[out] pu4mix_value GUINT32* the min value
+* @param[out] pu4max_value GUINT32* the max value
+*
+* @return GUINT32 define in GDef.h
+*
+**/
+GUINT32 GGetSpectrumBounds(GHANDLE hAudioDev,
+						   GUINT u4Band,
+						   GUINT32 *pu4mix_value,
+						   GUINT32 *pu4max_value);
+
+/**
+* @brief  query spectrum band nums
+*
+* @param[in] hAudioDev audio device handle 
+* @param[out] pu4BandsNum GUINT32* the band num value
+*
+* @return GUINT32 define in GDef.h
+*
+**/
+GUINT32 GGetSpectrumBands(GHANDLE hAudioDev,GUINT32 *pu4BandsNum);
+
+/**
 * @brief  set audio feature
 *
 * @param[in] hAudioDev audio device handle 
@@ -919,21 +922,6 @@ GUINT32 GGetEQValues(GHANDLE hAudioDev, AUD_EQVALUES_T* prEQValues);
 *
 **/
 GBOOL   GSetAudFeature(GHANDLE hAudioDev, AUD_DEC_FEATURE_INFO_T eAudFeatur);
-
-
-/**
-* @brief  set audio feature
-*
-* @param[in] hAudioDev audio device handle 
-* @param[in] rEQBandIIRCoef audio feature value
-*
-* @return GBOOL define in GDef.h
-*
-*	@see AUD_DEC_EQ_TYPE_IIR_COEF_T
-*
-**/
-GBOOL   GSetEQBandCoeficient (GHANDLE hAudioDev, AUD_DEC_EQ_TYPE_IIR_COEF_T rEQBandIIRCoef);
-
 
 /**
 * @brief  set audio balance on the specified type
@@ -1013,19 +1001,6 @@ typedef enum
 	MISC_AUD_SE_CSII_TBSS_SUB,
 	MISC_AUD_SE_CSII_TBSS_REAR,
 }MISC_AUD_SE_CSII_TBSS_T;
-
-typedef enum
-{
-    MISC_AUD_SE_CSII_FOCUS_CENTER_LEVEL = 16,
-    MISC_AUD_SE_CSII_FOCUS_FRONT_LEVEL,
-    MISC_AUD_SE_CSII_FOCUS_REAR_LEVEL,
-    MISC_AUD_SE_CSII_TRUBASS_FRONT_LEVEL,
-    MISC_AUD_SE_CSII_TRUBASS_SUB_LEVEL,
-    MISC_AUD_SE_CSII_TRUBASS_REAR_LEVEL,
-    MISC_AUD_SE_CSII_FRONT2REAR_LEVEL,
-    MISC_AUD_SE_CSII_CENTER2REAR_LEVEL
-} MISC_AUD_SE_CSII_SPKID_T;
-
 typedef struct
 {
 	GBOOL fgSupportSrs;
@@ -1035,8 +1010,6 @@ GBOOL fgIsSupportSRS();
 GBOOL fgIsSupportPL2();
 
 GUINT32 GSetAudThreshold(GHANDLE hAudioDev, MISC_AUD_THRESHOLD_T rThreshold);
-
-GUINT32 GSetAudDecCHDelay(GHANDLE hAudioDev, MISC_AUD_LS_CH_T rMiscAudCh, UINT16 u2DelayMs);
 
 #if MISC_SET_SRS
 GUINT32 GSetSRSSwitch(GHANDLE hAudioDev, MISC_AUD_SE_CSII_SWITCH_T eCSIISwitch);
@@ -1059,14 +1032,11 @@ GUINT32 GGetSRSTrueBass(GHANDLE hAudioDev,MISC_AUD_SE_CSII_SWITCH_T *eCSIISwitch
 
 GUINT32 GSetSRSTrueBassSize(GHANDLE hAudioDev,MISC_AUD_SE_CSII_TBSS_T eTBSS,MISC_AUD_SE_CSII_SS_T eCSIITBSS);
 GUINT32 GGetSRSTrueBassSize(GHANDLE hAudioDev,MISC_AUD_SE_CSII_TBSS_T eTBSS,MISC_AUD_SE_CSII_SS_T *peCSIITBSS);
-
-GUINT32 GSetSRSTrueBassStatus(GHANDLE hAudioDev, MISC_AUD_SE_CSII_TBSS_T eTBSS, MISC_AUD_SE_CSII_SWITCH_T eCSIISwitch);
-
-GUINT32 GSetSRSLevelValue(GHANDLE hAudioDev, MISC_AUD_SE_CSII_SPKID_T eSpkId, GINT32 i4LevelValue);
 #endif
 
 #if MISC_CLIENT_SET_GAIN
 GUINT32 GClientSetVolumeEx(GHANDLE hAudioDev, GUINT32 u4Vol);
+
 GUINT32	GClientSetVolume(GHANDLE hAudioDev,GUINT32 u4Vol);
 
 
@@ -1075,38 +1045,42 @@ BOOL GClientSetRDSVolume(GHANDLE hAudioDev,GUINT32 u4Vol);
 GUINT32 GClientGetVolume(GHANDLE hAudioDev, GUINT32 *pu4Vol);
 
 GUINT32 GClientSetRearVolumeEx(GHANDLE hAudioDev, GUINT32 u4Vol);
+
 GUINT32 GClientSetRearVolume(GHANDLE hAudioDev, GUINT32 u4Vol);
+
 GUINT32 GClientGetRearVolume(GHANDLE hAudioDev, GUINT32 *pu4Vol);
 
-
 GUINT32 GClientSetBalance(GHANDLE hAudioDev, GUINT32 u4Values, BALANCE_CHANGE_TYPE eBalanceType);
+
 GUINT32 GClientGetBalance(GHANDLE hAudioDev, GUINT32 *pu4Values, BALANCE_CHANGE_TYPE eBalanceType);
 
 GUINT32 GClientSetTestTone(GHANDLE hAudioDev, AUD_TEST_TONE_T eTestTone, MISC_TEST_TONE_TYPE_T eTestToneType);
+
 GUINT32 GClientGetTestTone(GHANDLE hAudioDev,AUD_TEST_TONE_T *peTestTone, MISC_TEST_TONE_TYPE_T *peTestToneType);
 
 GUINT32 GClientSetUpMix(GHANDLE hAudioDev, AUD_UPMIX_T eUpMixType, MISC_UPMIX_GAIN_T rUpmixGain);
+
 GUINT32 GClientGetUpMix(GHANDLE hAudioDev, AUD_UPMIX_T *peUpMixType, MISC_UPMIX_GAIN_T *prUpmixGain);
 
 GUINT32 GClientSetLoudNess(GHANDLE hAudioDev, GUINT8 uLoudNessType, MISC_LOUDNESS_GAIN_T rLoudNessGain);
+
 GUINT32 GClientGetLoudNess(GHANDLE hAudioDev, GUINT8 *puLoudNessType, MISC_LOUDNESS_GAIN_T *prLoudNessGain);
 
 GUINT32 GClientSetReverbType(GHANDLE hAudioDev, REVERBTYPE_T eReverbType, MISC_REVERB_COEF_T rReverbCoef);
+
 GUINT32 GClientGetReverbType(GHANDLE hAudioDev, REVERBTYPE_T *peReverbType, MISC_REVERB_COEF_T *prReverbCoef);
 
 GUINT32 GClientSetEQValues(GHANDLE hAudioDev, MISC_EQ_GAIN_T rEQGain, GBOOL fgEQEnable);
+
 GUINT32 GClientGetEQValues(GHANDLE hAudioDev, MISC_EQ_GAIN_T *prEQGain);
 
 GUINT32 GClientSetEQType(GHANDLE hAudioDev, EQTYPE_T eEQType, MISC_EQ_GAIN_T rEQTypeGain);
+
 GUINT32 GClientGetEQType(GHANDLE hAudioDev, EQTYPE_T *peEQType, MISC_EQ_GAIN_T *prEQTypeGain);
 
 GUINT32 GClientSetMVS(GHANDLE hAudioDev, MISC_MVS_T eMVSType, MISC_MVS_GAIN_T rMVSGain);
+
 GUINT32 GClientGetMVS(GHANDLE hAudioDev, MISC_MVS_T *peMVSType, MISC_MVS_GAIN_T *prMVSGain);
-
-
-GUINT32 GClientSetAutoSur (GHANDLE hAudioDev, AUD_SE_ATS_COEF_T rATSCoef_T);
-GUINT32 GClientSetAutoSurGain (GHANDLE hAudioDev, AUD_SE_ATS_CTRL_T eATSID, UINT32 u4Gains);
-GUINT32 GClientGetAutoSur (GHANDLE hAudioDev, AUD_SE_ATS_COEF_T *prATSCoef_T);
 
 #endif
 
@@ -1137,6 +1111,17 @@ GUINT32 GSetSpeakerLayout(GHANDLE hAudioDev, GUINT32 u4SpeakerLayoutType, GUINT3
 GUINT32 GGetSpeakerLayout(GHANDLE hAudioDev, GUINT32* pu4SpeakerLayoutType, GUINT32* pu4SpeakerSize);
 
 /**
+* @brief  set DRC on/off
+*
+* @param[in] bDRCOn on/off 
+*
+* @return GUINT32 define in GDef.h
+* @note not in implementation
+*
+**/
+GUINT32 GSetDRC(GBOOL bDRCOn);
+
+/**
 * @brief  set audio EQ  type
 *
 * @param[in] hAudioDev audio device handle 
@@ -1162,7 +1147,6 @@ GUINT32 GSetEQType(GHANDLE hAudioDev, EQTYPE_T eEQType);
 GUINT32 GGetEQType(GHANDLE hAudioDev, EQTYPE_T *peEQType);
 
 #if MISC_SET_PL2
-
 /**
 * @brief  set audio PL2  type
 *
@@ -1213,7 +1197,6 @@ GINT32  GSetReverbType(GHANDLE hAudioDev, REVERBTYPE_T eReverbType);
 *
 **/
 GUINT32 GGetReverbType(GHANDLE hAudioDev, REVERBTYPE_T *peReverbType);
-
 
 /**
 * @brief set audio upmix type
@@ -1280,8 +1263,6 @@ GUINT32 GSetSpdifOutputType(GHANDLE hAudioDev, SPDIFOUTPUT_T eSpdifOutputType);
 
 GUINT32 GAudioFuncOptionSet(GHANDLE hAudioDev, MISC_AUD_FUNC_OPTION_T rFuncOptionSet);
 
-
-
 /**
 * @brief  Set Audio Diversity Info
 *
@@ -1327,7 +1308,6 @@ GUINT32 DVP_GSetDisplayType(GBOOL isCurrentSet, TVDISPLAY_T eTVDisplayType);
 *
 **/
 GUINT32 DVP_GGetDisplayType(GBOOL isCurrentSet, TVDISPLAY_T *peTVDisplayType);
-
 
 /**
 * @brief  set DVP captions type.
@@ -1709,7 +1689,7 @@ GUINT32 DVP_GGetDialogType(GBOOL isCurrentSet, GUINT8 *puDialogType);
 * @see SPDIFOUTPUT_T
 *
 **/
-GUINT32 DVP_GSetSpdifOutputType(GBOOL isCurrentSet, SPDIFOUTPUT_T eSpdifOutputType);
+GUINT32 DVP_GSetSpdifOutputType( GBOOL isCurrentSet, SPDIFOUTPUT_T eSpdifOutputType);
 
 /**
 * @brief  get DVP spdif output type
@@ -2033,9 +2013,63 @@ GUINT32 DVP_GSetRearVolume(GBOOL isCurrentSet, GUINT32 u4Vol);
 **/
 GUINT32 DVP_GGetRearVolume(GBOOL isCurrentSet, GUINT32 *pu4Vol);
 
+/**
+* @brief set DVP audio EQ on the specified band and save in regedit
+*
+* @param[in] isCurrentSet current or default 
+* @param[in] u4Band the band value
+* @param[in] i4Value the EQ value on u4Band
+*
+* @return GUINT32 define in GDef.h
+*
+**/
+GUINT32 DVP_GSetEQValue(GBOOL isCurrentSet, GUINT u4Band, GINT32 i4Value);
+
+/**
+* @brief get DVP audio EQ value on the specified band
+*
+* @param[in] isCurrentSet current or default 
+* @param[in] u4Band  the band value
+* @param[out] pi4Value pointer to the EQ value on u4Band
+*
+* @return GUINT32 define in GDef.h
+*
+**/
+GUINT32 DVP_GGetEQValue(GBOOL isCurrentSet, GUINT u4Band, GINT32* pi4Value);
+
 GUINT32 DVP_GSetEQValues(GBOOL isCurrentSet, AUD_EQVALUES_T rEQValues);
 
 GUINT32 DVP_GGetEQValues(GBOOL isCurrentSet, AUD_EQVALUES_T *prEQValues);
+
+
+
+/**
+* @brief set DVP audio balance on the specified type
+*
+* @param[in] isCurrentSet current or default
+* @param[in] i4Values the balance value
+* @param[in] eBalanceType the specified balace type
+*
+* @return GUINT32 define in GDef.h
+*
+*	@see BALANCE_CHANGE_TYPE
+*
+**/
+GUINT32 DVP_GSetBalance(GBOOL isCurrentSet, GINT32 i4Values, BALANCE_CHANGE_TYPE eBalanceType);
+
+/**
+* @brief  get DVP audio balance on the specified type
+*
+* @param[in] isCurrentSet current or default 
+* @param[out] pi4Values GINT32 * the balance value
+* @param[in] eBalanceType the specified balace type
+*
+* @return GUINT32 define in GDef.h
+*
+* @see BALANCE_CHANGE_TYPE
+*
+**/
+GUINT32 DVP_GGetBalance(GBOOL isCurrentSet, GINT32 *pi4Values, BALANCE_CHANGE_TYPE eBalanceType);
 
 GUINT32 DVP_GSetBalances(GBOOL isCurrentSet, MISC_DVP_BALANCES_T rBalanceValues);
 
@@ -2061,29 +2095,11 @@ GRESULT GSetAudOutput(AUD_CFG_ID eAudCfg, AUD_OUT_TYPE_T eAudOut);
 *@}
 */
 
-/**
-* @brief  set DVD Divx Subtile
-*
-* @param[in] 
-* @param[in] 0 OFF 1 ON
-*
-* @return GRESULT define in GDef.h
-
-*
-**/
-GUINT32 DVP_GSetDivxSub(GBOOL isCurrentSet, GUINT8 uDivxSub);
-
 GBOOL GGetAudFrontStatus();
 
 GBOOL GGetAudRearStatus();
 GUINT32 GAudSelDacType(AUD_CFG_ID eOut,AUD_DAC_TYPE_T eDacType);
 GUINT32 GAudSelRearDacType(AUD_REAR_DAC_TYPE_T eDacType);
-
-GINT32 GGetBrightnessFromHW(GUINT32 *pu4Level);
-GINT32 GGetContrastFromHW(GUINT32 *pu4Level);
-GINT32 GGetHueFromHW(GUINT32 *pu4Level);
-GINT32 GGetSaturationFromHW(GUINT32 *pu4Level);
-
 
 #ifdef __cplusplus
 }

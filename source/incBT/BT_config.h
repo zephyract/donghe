@@ -53,11 +53,11 @@
 *
 * Last changed:
 * ------------- 
-* $Author: dejun.liu $ 
+* $Author: xiaozhou.huang $ 
 *
 * $Modtime: $  
 
-* $Revision: #1 $
+* $Revision: #13 $
 ***************************************************************************/
 
 #ifndef _BT_CONFIG_H_
@@ -100,5 +100,6 @@
 
 #define ENABLE_SSP								(0x00000001 << 18)
 
+#define THREE_WAY_CALLING_SUPPORT				(0x00000001 << 19)
 #endif
 

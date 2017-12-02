@@ -41,15 +41,15 @@ void CCameraDlg::OnMediaEvent(UINT media_event, UINT param1, UINT param2)
 	::SetRect(&rc, 10, 4, 714, 576);		// 720X576
 	switch(media_event)
 	{
-	case AVIN_SIGNAL_CHANGE:
-	case AVIN_SIGNAL_READY:
+	case EVT_MSDK_AVIN_SIGNAL_CHANGE:
+	case EVT_MSDK_AVIN_SIGNAL_READY:
 		m_bIsSiganlReady = TRUE;	
 		KillTimer(TIMER_ID_SHOW_SIGNAL_FLAG);
 		ShowNoSignalFlag();	
 		CMsdkRender::GetInstance()->SetVideoScaleCamera(&rc);
 		UpdateVideoParams();
 		break;
-	case AVIN_SIGNAL_LOST:
+	case EVT_MSDK_AVIN_SIGNAL_LOST:
 		m_bIsSiganlReady = FALSE;
 		SetTimer(TIMER_ID_SHOW_SIGNAL_FLAG, 1000);
 		UpdateVideoParams();

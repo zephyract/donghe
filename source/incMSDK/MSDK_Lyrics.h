@@ -67,71 +67,16 @@
 extern "C" {
 #endif
 
-/**
-* @addtogroup MediaInfo
-* @{
-**/
-
-/**
-*   @brief This method get lyric item count. 
-*
-*   @param[in]  hLyricInfo lyric infomation handle
-*   @param[out] *pu4Count  the count of the lyric
-*
-*   @return MRESULT  define in msdk_error.h
-*              
-*   @see    MediaGraph_QueryInterface()
-*   @see    msdk_error.h
-*
-**/
 MRESULT LyricInfo_GetCount(HLYRICINFO hLyricInfo, UINT32 *pu4Count);
 
-/**
-*   @brief This method get display time of the item by index. 
-*   @param[in]  hLyricInfo lyric infomation handle
-*   @param[in]  i4Index  the index of the lyric
-*   @param[in]  *pu4Pts  the display time of the lyric item 
-*
-*   @return MRESULT  define in msdk_error.h
-*              
-*   @see    MediaGraph_QueryInterface()
-*   @see    msdk_error.h
-*
-**/
 MRESULT LyricInfo_GetPts(HLYRICINFO hLyricInfo, INT32 i4Index, UINT32 *pu4Pts);
 
-/**
-*   @brief This method get lyric item text by index. 
-*   @param[in]  hLyricInfo lyric infomation handle
-*   @param[in]  i4Index  the index of the lyric
-*   @param[out] *szLyric  the lyric item text 
-*   @param[in] u4MaxLen  the maximum length of the lyric item 
-*
-*   @return MRESULT  define in msdk_error.h
-*              
-*   @see    MediaGraph_QueryInterface()
-*   @see    msdk_error.h
-*
-**/
+
 MRESULT LyricInfo_GetText(HLYRICINFO hLyricInfo, INT32 i4Index, GTCHAR *szLyric, UINT32 u4MaxLen);
 
-/**
-*   @brief This method get index by current time. 
-*   @param[in]  hLyricInfo lyric infomation handle
-*   @param[in]  u8CurTime  current playback time
-*   @param[out] *pu4Index  the index of lyric 
-*
-*   @return MRESULT  define in msdk_error.h
-*              
-*   @see    MediaGraph_QueryInterface()
-*   @see    msdk_error.h
-*
-**/
 MRESULT LyricInfo_GetIndexByPts(HLYRICINFO hLyricInfo, GUINT64 u8CurTime, UINT32 *pu4Index);
 
-/**
-*@}
-*/
+
 #ifdef __cplusplus
 }
 #endif

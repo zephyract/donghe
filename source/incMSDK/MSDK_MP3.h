@@ -68,122 +68,186 @@ extern "C" {
 #endif
 
 /**
- * @addtogroup MediaInfo
+ * @addtogroup mediaInfo
  * @{
  */
 
 /**
-*   @brief get MP3 title information
+*	@brief get MP3 title information
 *
-*   @param[in]   hMP3Info  mp3info handle
-*   @param[out]    szTitle GTCHAR*  pointer address of output title information 
-*   @param[in]     u4MaxLen GUINT32 max length of szTitle
+*	@param[in] 	 hMP3Info  mp3info handle
+*	@param[out]    szTitle GTCHAR*  pointer address of output title information 
+*	@param[in]     u4MaxLen GUINT32 max length of szTitle
 *
-*   @return    MRESULT  define in msdk_error.h
-*              
+*	@return	   MRESULT  define in msdk_error.h
+*			   
 *
-*   @see     MediaGraph_QueryInterface()
-*   @see     msdk_error.h
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
 *
 **/
 MRESULT     MP3Info_GetTitle(HMP3INFO hMP3Info, GTCHAR *szTitle, GUINT32 u4MaxLen);
 
 /**
-*   @brief get MP3 artist information
+*	@brief get MP3 artist information
 *
-*   @param[in]   hMP3Info  mp3info handle
-*   @param[out]    szArtist GTCHAR* address of output artist information 
-*   @param[in]     u4MaxLen GUINT32 max length of szArtist
+*	@param[in] 	 hMP3Info  mp3info handle
+*	@param[out]    szArtist GTCHAR* address of output artist information 
+*	@param[in]     u4MaxLen GUINT32 max length of szArtist
 *
-*   @return    MRESULT  define in msdk_error.h
-*              
+*	@return	   MRESULT  define in msdk_error.h
+*			   
 *
-*   @see     MediaGraph_QueryInterface()
-*   @see     msdk_error.h
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
 *
 **/
 MRESULT     MP3Info_GetArtist(HMP3INFO hMP3Info, GTCHAR *szArtist, GUINT32 u4MaxLen);
 
 /**
-*   @brief get MP3 picture information
+*	@brief get MP3 picture information
 *
-*   @param[in]   hMP3Info  mp3info handle
-*   @param[out]    ppbData GBYTE** pointer to address of output picture data 
-*   @param[out]     pu4DataSize GUINT32* size of picture data
+*	@param[in] 	 hMP3Info  mp3info handle
+*	@param[out]    ppbData GBYTE** pointer to address of output picture data 
+*	@param[out]     pu4DataSize GUINT32* size of picture data
 *
-*   @return    MRESULT  define in msdk_error.h
-*              
+*	@return	   MRESULT  define in msdk_error.h
+*			   
 *
-*   @see     MediaGraph_QueryInterface()
-*   @see     msdk_error.h
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
 *
 **/
 MRESULT     MP3Info_GetAPictureData(HMP3INFO hMP3Info, GBYTE **ppbData, GUINT32 *pu4DataSize);
 
 /**
-*   @brief get MP3 album information
+*	@brief get MP3 album information
 *
-*   @param[in]   hMP3Info  mp3info handle
-*   @param[out]    szAlbum GTCHAR*  address of output album information
-*   @param[in]     u4MaxLen GUINT32 max length of szAlbum
+*	@param[in] 	 hMP3Info  mp3info handle
+*	@param[out]    szAlbum GTCHAR*  address of output album information
+*	@param[in]     u4MaxLen GUINT32 max length of szAlbum
 *
-*   @return    MRESULT  define in msdk_error.h
-*              
+*	@return	   MRESULT  define in msdk_error.h
+*			   
 *
-*   @see     MediaGraph_QueryInterface()
-*   @see     msdk_error.h
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
 *
 **/
 MRESULT     MP3Info_GetAlbum(HMP3INFO hMP3Info, GTCHAR *szAlbum, GUINT32 u4MaxLen);
 
 /**
-*   @brief get MP3 genre information
+*	@brief get MP3 genre information
 *
-*   @param[in]   hMP3Info  mp3info handle
-*   @param[out]    szGenre GTCHAR*  address of output genre information
-*   @param[in]     u4MaxLen GUINT32 max length of szGenre
+*	@param[in] 	 hMP3Info  mp3info handle
+*	@param[out]    szGenre GTCHAR*  address of output genre information
+*	@param[in]     u4MaxLen GUINT32 max length of szGenre
 *
-*   @return    MRESULT  define in msdk_error.h
-*              
+*	@return	   MRESULT  define in msdk_error.h
+*			   
 *
-*   @see     MediaGraph_QueryInterface()
-*   @see     msdk_error.h
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
 *
 **/
 MRESULT     MP3Info_GetGenre(HMP3INFO hMP3Info, GTCHAR *szGenre, GUINT32 u4MaxLen);
 
 /**
-*   @brief get MP3 date information
+*	@brief get MP3 date information
 *
-*   @param[in]   hMP3Info  mp3info handle
-*   @param[out]    szDate GTCHAR*  address of output date information
-*   @param[in]    u4MaxLen GUINT32 max length  of szDate
+*	@param[in] 	 hMP3Info  mp3info handle
+*	@param[out]    szDate GTCHAR*  address of output date information
+*	@param[in]    u4MaxLen GUINT32 max length  of szDate
 *
-*   @return    MRESULT  define in msdk_error.h
-*              
+*	@return	   MRESULT  define in msdk_error.h
+*			   
 *
-*   @see     MediaGraph_QueryInterface()
-*   @see     msdk_error.h
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
 *
 **/
 MRESULT     MP3Info_GetDate(HMP3INFO hMP3Info, GTCHAR *szDate, GUINT32 u4MaxLen);
 
 /**
-*   @brief get MP3 year information
+*	@brief get MP3 year information
 *
-*   @param[in]   hMP3Info  mp3info handle
-*   @param[out]    szYear GTCHAR*  address of output year information
-*   @param[in]    u4MaxLen GUINT32 max length  of szYear
+*	@param[in] 	 hMP3Info  mp3info handle
+*	@param[out]    szYear GTCHAR*  address of output year information
+*	@param[in]    u4MaxLen GUINT32 max length  of szYear
 *
-*   @return    MRESULT  define in msdk_error.h
-*              
+*	@return	   MRESULT  define in msdk_error.h
+*			   
 *
-*   @see     MediaGraph_QueryInterface()
-*   @see     msdk_error.h
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
 *
 **/
 MRESULT     MP3Info_GetYear(HMP3INFO hMP3Info, GTCHAR *szYear, GUINT32 u4MaxLen);
 
+/**
+*	@brief get MP3 lyric item count
+*
+*	@param[in] 	 hMP3Info  mp3info handle
+*	@param[out]    pu4Count GUINT32*  item count
+*
+*	@return	   MRESULT  define in msdk_error.h
+*			   
+*
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
+*
+**/
+MRESULT     MP3Info_GetLyricItemCount(HMP3INFO hMP3Info, GUINT32 *pu4Count);
+
+/**
+*	@brief get MP3 lyric item pts
+*
+*	@param[in] 	 hMP3Info  mp3info handle
+*	@param[in]     i4Index  item index
+*     @param[out]   pu4Second  item pts
+*
+*	@return	   MRESULT  define in msdk_error.h
+*			   
+*
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
+*
+**/
+MRESULT     MP3Info_GetLyricItemPts(HMP3INFO hMP3Info, GINT32 i4Index, GUINT32 *pu4Second);
+
+/**
+*	@brief get MP3 lyric item which is specified by index
+*
+*	@param[in] 	hMP3Info  mp3info handle
+*	@param[in]    i4Index GUINT32  item index
+*	@param[out]	szLyric  GTCHAR* memory for lyric
+*	@param[in] 	u4MaxLen GUINT32 max length of szLyric
+*
+*	@return	   MRESULT  define in msdk_error.h
+*			   
+*
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
+*
+**/
+MRESULT     MP3Info_GetLyricItemText(HMP3INFO hMP3Info, GINT32 i4Index,
+                                     GTCHAR *szLyric, GUINT32 u4MaxLen);
+
+/**
+*	@brief initialized MP3 lyric,lyric Analysis and encode convert
+*
+*	@param[in] 	 pBLyrcBuff  GBYTE* raw data
+*	@param[out]   pWLyrcBuff GWCHAR** wide char be return while pb2Unicode is true
+*	@param[out]	 pb2Unicode GBOOL*	true is  converted unicode
+*
+*	@return	   MRESULT  define in msdk_error.h
+*			   
+*
+*	@see	 MediaGraph_QueryInterface()
+*	@see	 msdk_error.h
+*
+**/
+MRESULT		MP3Info_InitLyric(GBYTE *pBLyrcBuff,GWCHAR **pWLyrcBuff,GBOOL *pb2Unicode);
 /**
 *@}
 */

@@ -53,11 +53,11 @@
  *
  * Last changed:
  * ------------- 
- * $Author: dejun.liu $ 
+ * $Author: xiaozhou.huang $ 
  *
  * $Modtime: $  
  *
- * $Revision: #1 $
+ * $Revision: #5 $
 ****************************************************************************/
 
 #ifndef _BZI_PBMGR_H_

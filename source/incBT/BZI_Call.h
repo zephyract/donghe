@@ -53,11 +53,11 @@
  *
  * Last changed:
  * ------------- 
- * $Author: dejun.liu $ 
+ * $Author: xiaozhou.huang $ 
  *
  * $Modtime: $  
  *
- * $Revision: #1 $
+ * $Revision: #7 $
 ****************************************************************************/
 
 #ifndef _BZI_CALL_H_
@@ -122,6 +122,8 @@ HRESULT BZ_GetSignalQuality(E_BT_PHONESIGHAL_LEVEL_T & eLvl);
 
 HRESULT BZ_GetBatteryLevel(E_BT_PHONEBATTERY_LEVEL_T & eLvl);
 
+HRESULT BZ_GetServiceAvailability(BOOL &fgAvailable);
+
 E_BZMWCALLMANAGER_STATE_T BZ_GetIfInCallState();
 
 HRESULT BZ_SetAPNCode(CHAR *code);
@@ -141,6 +143,8 @@ HRESULT BZ_GetCallListAlphaParam(UINT32 u4Idx, CHAR *szAlphaParam, DWORD u4MaxCh
 HRESULT BZ_IsSupportInBandRing(BOOL *pfgInBandRing);
 HRESULT BZ_IsSupportVoiceRecognition(BOOL *pfgSupport);
 
+HRESULT BZ_SendThreewayCallingCMD(THREE_WAY_CALLING_CMD eCMD);
+HRESULT BZ_GetCurrentCallList(CALL_LIST *pCallList);
 #ifdef __cplusplus
 }
 #endif

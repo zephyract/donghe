@@ -53,7 +53,7 @@
 *
 * Last changed:
 * ------------- 
-* $Author: dejun.liu $ 
+* $Author: zeng.zhang $ 
 *
 * $Modtime: $  
 *
@@ -262,12 +262,20 @@ protected:
 
     static GINT  _cIsDigit(GCHAR ch)            
     { 
+#ifdef  MTK_FP
+        return (ch >= '0' && ch <= '9');
+#else
         return isdigit((GUCHAR)ch); 
+#endif
     }
 
     static GINT  _cIsSpace(GCHAR ch)            
     {
+#ifdef  MTK_FP
+        return (ch == 0x20);
+#else
         return isspace((GUCHAR)ch); 
+#endif
     }
 
     static GINT  _cStrCmp(const GCHAR* pstrOne, const GCHAR* pstrOther)
@@ -508,12 +516,20 @@ protected:
 
     static GINT  _cIsDigit(GWCHAR ch)
     { 
+#ifdef MTK_FP
+        return (ch >= L'0' && ch < L'9');
+#else
         return iswdigit(ch); 
+#endif
     }
 
     static GINT  _cIsSpace(GWCHAR ch)    
     { 
+#ifdef MTK_FP
+        return (ch == 0x20);
+#else
         return iswspace(ch); 
+#endif
     }
 
     static GINT  _cStrCmp(const GWCHAR* pstrOne, const GWCHAR* pstrOther)

@@ -78,36 +78,81 @@ extern "C" {
 */
 
 /**
-*   @brief This method initializes msdk. 
+*	@brief This method initializes msdk. 
 *
-*   @return MRESULT  define in msdk_error.h
-*              
-*   @see    msdk_error.h
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
 *
-*   @note   must be called before msdk api used
+*	@note	must be called before msdk api used
 **/
+#if MSDK_FULLSCREEN
+MRESULT     MSDK_Init(HWND hWnd,LPDIRECTDRAWSURFACE pddPrimary);
+#else
 MRESULT     MSDK_Init(GVOID);
+#endif
 
 /**
-*   @brief This method uninitializes msdk. 
+*	@brief This method uninitializes msdk. 
 *
-*   @return MRESULT  define in msdk_error.h
-*              
-*   @see    msdk_error.h
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
 *
-*   @note   must be called after app exit.sure that all resource be released
+*	@note	must be called after app exit.sure that all resource be released
 **/
 MRESULT     MSDK_Uninit(GVOID);
 
 /**
-*   @brief This method retrives device supportted feature. 
+*	@brief This method initializes thread context. 
 *
-*   @return MRESULT  define in msdk_error.h
-*              
-*   @see    msdk_error.h
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
 *
+*	@note	not implemented
 **/
-MRESULT MSDK_GetSupportFeature(E_MSDK_FEATURE_T *peFeature);
+MRESULT     MSDK_InitThreadContext(GVOID);
+
+/**
+*	@brief This method uninitializes  thread context. 
+*
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
+*
+*	@note	not implemented
+**/
+MRESULT     MSDK_UninitThreadContext(GVOID);
+
+/**
+*	@brief This method reset  msdk thread 
+*
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
+*
+*	@note	not implemented
+**/
+MRESULT     MSDK_Reset(GVOID);
+
+/**
+*	@brief This method retrieves  msdk state. 
+*	
+*	@param[out]  peState msdk state type
+*
+*	@return	MRESULT  define in msdk_error.h
+*			   
+*	@see	MediaGraph_Create()
+*	@see	msdk_error.h
+*	@see	E_MSDK_STATE
+**/
+MRESULT     MSDK_GetState(E_MSDK_STATE *peState);
 
 /**
 *   @brief This method Set codepage for msdk. 
@@ -119,7 +164,8 @@ MRESULT MSDK_GetSupportFeature(E_MSDK_FEATURE_T *peFeature);
 *   @see    msdk_error.h
 *   @see    E_MSDK_CODEPAGE_SET
 **/
-MRESULT     MSDK_SetCodePage(E_MSDK_CODEPAGE_SET eCodePage);
+MRESULT     MSDK_SetCodePage(GUINT32 u4CodePage);
+
 
 /**
 *@}

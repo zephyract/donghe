@@ -16,7 +16,7 @@
 #include "MSDK_Video.h"
 #include "MSDK_Subtitle.h"
 #include "MSDK_Audio.h"
-#include "AVIN.h"
+#include "MSDK_AVIN.h"
 
 // wma
 #include "msdk_mediagraph_wma.h"
@@ -75,6 +75,9 @@ public:
 	DWORD FGetCurPostion();		// 返回值单位秒
 	void FLastMemoryStart(DWORD dwPosition);	// 单位秒
 	void FStopnClear();		// 停止并清除mediagraph,调用后该文件不能再播放,需重新调用FSetSourceFile(). 
+	// 在收到graph build消息后，调用该函数获取该视频文件的支持情况
+	// 返回值参考E_MSDK_CAPABILITY_T
+	DWORD FGetCapabilites();
 	// audio
 	HAUDIOINFO FGetAudioInfoHandle();
 	void FGetAudioInfo(OUT BYTE* pCount, OUT BYTE* pCurrent);	// 返回当前audio，及audio总数
@@ -93,9 +96,10 @@ public:
 	// interface for camera
 	void AOpenCameraChannel();	// 打开倒车的通道
 	void ACloseCameraChannel();
-	void ASetCameraMirror(E_AVIN_MIRROR_TYPE_T mirror);
+	void ASetCameraMirror(MSDK_AVIN_MIRROR_E mirror);
 	BOOL AIsSignalReadyCamera();
 	void SetVideoScaleCamera(RECT *prc);
+	MSDK_AVIN_SIGNAL_MODE_T AGetSignalModeCamera();
 	// 倒车来时不同的情况需作不同的处理
 	void AOnCamera(BOOL bStart, SOURCE_ID sid, DVP_SINK sink_type);
 
@@ -114,7 +118,7 @@ public:
 	// N制,PAL-M是 720X480, 
 	// 如果有的制式显示不出来,有可能是分辩率弄错了,剪裁时必须在正确的分辩率基础上剪裁
 	void SetVideoScaleAvin1(RECT *prc);
-	E_AVIN_SIGNAL_MODE_T AGetSignalModeAvin1();
+	MSDK_AVIN_SIGNAL_MODE_T AGetSignalModeAvin1();
 	void ACloseAudioAvin1();		// 临时关闭audio,RDS报警时会用
 	void AOpenAudioAvin1();			// 恢复打开audio,RDS报警时会用
 
@@ -125,7 +129,7 @@ public:
 	void AShowVideoAvin2(BOOL bShow, DVP_SINK sink_type, LPRECT prect=NULL);
 	BOOL AIsSignalReadyAvin2();
 	void SetVideoScaleAvin2(RECT *prc);
-	E_AVIN_SIGNAL_MODE_T AGetSignalModeAvin2();
+	MSDK_AVIN_SIGNAL_MODE_T AGetSignalModeAvin2();
 	void ACloseAudioAvin2();		// 临时关闭audio,RDS报警时会用
 	void AOpenAudioAvin2();			// 恢复打开audio,RDS报警时会用
 
@@ -135,7 +139,7 @@ public:
 	void AShowVideoTV(BOOL bShow, DVP_SINK sink_type, LPRECT prect=NULL);
 	BOOL AIsSignalReadyTV();
 	void SetVideoScaleTV(RECT *prc);
-	E_AVIN_SIGNAL_MODE_T AGetSignalModeTV();
+	MSDK_AVIN_SIGNAL_MODE_T AGetSignalModeTV();
 	void ACloseAudioTV();		// 临时关闭audio,RDS报警时会用
 	void AOpenAudioTV();			// 恢复打开audio,RDS报警时会用
 
@@ -151,7 +155,7 @@ public:
 	BOOL UnRegisterEventHandlerF(PFN_MSDKRENDER_EVENT_HANDLER pfn, DWORD user_data);
 
 
-	void HandleEventAvin(UINT msgNotify, UINT u4Event);		// for avin
+	void HandleEventAvin(HMEDIAGRAPH hMediaGraph);		// for avin
 	// 如果注册数量已经超过最大值，则返回错误
 	BOOL RegisterEventHandlerAvin(PFN_MSDKRENDER_EVENT_HANDLER pfn, DWORD user_data, MSDK_AVIN_TYPE type);
 	// 如果未找到该项，则返回错误
@@ -172,23 +176,23 @@ protected:
 	void OnGraphBuiltFile();
 
 	// for avin
-	static MRESULT MediaEventListenerAvin(UINT msgNotify, GUINT32 u4Evt, 
+	static MRESULT MediaEventListenerAvin(HMEDIAGRAPH hMediaGraph, GUINT32 u4Evt, 
 		GUINT32 u4Param1, GUINT32 u4Param2, 
 		GUINT32 u4CustomData);
-	void OnMediaEventAvin(UINT msgNotify, UINT media_event, UINT param1, UINT param2);
-	void OpenAvin(HMEDIAGRAPH *phMediaGraphV, E_AVIN_SOURCE_CHANNEL_T srcV, 
-		HMEDIAGRAPH *phMediaGraphA, E_AVIN_SOURCE_CHANNEL_T srcA, DVP_SINK sink_type, BOOL bInitShow=FALSE);
+	void OnMediaEventAvin(HMEDIAGRAPH hMediaGraph, UINT media_event, UINT param1, UINT param2);
+	void OpenAvin(HMEDIAGRAPH *phMediaGraphV, E_MSDK_AVIN_VINDEX srcV, 
+		HMEDIAGRAPH *phMediaGraphA, E_MSDK_AVIN_AINDEX srcA, DVP_SINK sink_type, BOOL bInitShow=FALSE);
 	void CloseAvin(HMEDIAGRAPH *phMediaGraphV, HMEDIAGRAPH *phMediaGraphA);
 	void SetSinkAvin(HMEDIAGRAPH *phMediaGraphV, HMEDIAGRAPH *phMediaGraphA, DVP_SINK sink_type);
 	// sink_type指的是当前avin通道处在哪种模式, 不同的模式,处理方式可能不一样
 	void ShowVideoAvin(BOOL bShow, HMEDIAGRAPH *phMediaGraphV, DVP_SINK sink_type, LPRECT prect=NULL);
 	// 剪裁图像
-	void SetVideoScaleAvin(HAVINST hMediaGraph, RECT *prc);
-	E_AVIN_SIGNAL_MODE_T GetSignalModeAvin(HAVINST hMediaGraph);
+	void SetVideoScaleAvin(HMEDIAGRAPH hMediaGraph, RECT *prc);
+	MSDK_AVIN_SIGNAL_MODE_T GetSignalModeAvin(HMEDIAGRAPH hMediaGraph);
 
 	// create mediagraph and initialize it
 	BOOL CreateMediagraphFile();
-	BOOL CreateMediagraphAvin(HMEDIAGRAPH *phMediaGraphV, HMEDIAGRAPH *phMediaGraphA, UINT msgNotify);
+	BOOL CreateMediagraphAvin(HMEDIAGRAPH *phMediaGraphV, HMEDIAGRAPH *phMediaGraphA);
 	HMEDIAGRAPH GetAvinMediagraph(MSDK_AVIN_TYPE type);
 protected:
 
@@ -197,18 +201,18 @@ protected:
 	HMEDIAGRAPH m_hMediaGraphFile;	// 用来播放文件
 	HMEDIAGRAPH m_hMediaGraphWma;	// 用来播放wma文件
 
-	HAVINST m_hMediaGraphAvin1V;	// 用来播放AVIN1视频
-	HAVINST m_hMediaGraphAvin1A;	// 用来播放AVIN1音频
+	HMEDIAGRAPH m_hMediaGraphAvin1V;	// 用来播放AVIN1视频
+	HMEDIAGRAPH m_hMediaGraphAvin1A;	// 用来播放AVIN1音频
 
-	HAVINST m_hMediaGraphAvin2V;	// 用来播放AVIN2视频
-	HAVINST m_hMediaGraphAvin2A;	// 用来播放AVIN2音频
+	HMEDIAGRAPH m_hMediaGraphAvin2V;	// 用来播放AVIN2视频
+	HMEDIAGRAPH m_hMediaGraphAvin2A;	// 用来播放AVIN2音频
 
-	HAVINST m_hMediaGraphTVV;	// 用来播放电视视频
-	HAVINST m_hMediaGraphTVA;	// 用来播放电视音频
+	HMEDIAGRAPH m_hMediaGraphTVV;	// 用来播放电视视频
+	HMEDIAGRAPH m_hMediaGraphTVA;	// 用来播放电视音频
 
-	HAVINST m_hMediaGraphFM;	// 用来播放FM音频
+	HMEDIAGRAPH m_hMediaGraphFM;	// 用来播放FM音频
 
-	HAVINST m_hMediaGraphCamera;// 用来倒车
+	HMEDIAGRAPH m_hMediaGraphCamera;// 用来倒车
 
 
 	// 如果pfn函数指针为空，表示该项没有使用
@@ -221,3 +225,18 @@ protected:
 	BOOL m_bIsWmaPlaying;	// 用来标识是否wma正在播放
 
 };
+
+typedef enum
+{
+	MSDK_CAP_FILE_SEEK_SUPPORT			= 0x01   ,		//文件能否time seek
+	MSDK_CAP_FILE_FF_SUPPORT			= 0x01<<1,		//文件能否快进
+	MSDK_CAP_VIDEO_RESOLUTION_SUPPORT   = 0x01<<2,		//文件视频解决方案是否支持（比如128M的1080p的不支持）
+	MSDK_CAP_VIDEO_BITRATE_SUPPORT      = 0x01<<3,		//文件视频比特率是否支持
+	MSDK_CAP_VIDEO_FRAMERATE_SUPPORT    = 0x01<<4,		//文件视频帧率是否支持
+	MSDK_CAP_VIDEO_CODEC_SUPPORT        = 0x01<<5,		//文件视频编码方式是否支持
+	MSDK_CAP_VIDEO_PROFILE_LEVEL_SUPPORT= 0x01<<6,		//文件视频编码版本是否支持（比如DIVX,  我们只支持DIVX3、4、5）
+	MSDK_CAP_AUDIO_BITRATE_SUPPOPRT     = 0x01<<7,		//文件音频比特率是否支持
+	MSDK_CAP_AUDIO_SAMPLERATE_SUPPORT   = 0x01<<8,		//文件音频采样率是否支持
+	MSDK_CAP_AUDIO_CODEC_SUPPORT        = 0x01<<9,		//文件音频编码方式是否支持
+	MSDK_CAP_AUDIO_PROFILE_LEVEL_SUPPORT= 0x01<<10       //文件音频编码版本是否支持
+}E_MSDK_CAPABILITY_T;

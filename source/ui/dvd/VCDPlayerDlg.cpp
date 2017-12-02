@@ -63,8 +63,8 @@ void CVCDPlayerDlg::OnInitDialog()
 	InitLayer();
 
 	// DVD ×ó±ß¼ô²Ãµô8¸öÏñËØ
-	DVD_SCALE_INFO_T scale_info;
-	scale_info.eSinkType = DVD_SINK_FRONT;
+	SWI_SCALE_INFO_T scale_info;
+	scale_info.eSinkType = SWI_SINK_FRONT;
 	::SetRect(&scale_info.rRect, 8, 6, 712, 480);
 	scale_info.fgNotScale = FALSE;
 	DVP_SetScaleInfo(&scale_info);

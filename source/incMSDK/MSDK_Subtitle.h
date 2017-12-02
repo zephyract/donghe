@@ -52,7 +52,7 @@
 *
 *
 *------------------------------------------------------------------------------
-* $Revision: #2 $
+* $Revision: #4 $
 * $Modtime:$
 * $Log:$
 *
@@ -69,7 +69,7 @@ extern "C" {
 #endif
 
 /**
- * @addtogroup MediaInfo
+ * @addtogroup mediaInfo
  * @{
  */
 
@@ -115,6 +115,26 @@ MRESULT     SubtitleInfo_GetType(HSUBTITLEINFO hSubtitleInfo, GINT32 i4Index,
                                  E_MSDK_SUBTITLE_TYPE *peType);
 
 /**
+*    @brief get specify subtitle stream codec
+*
+*    @param[in]     hSubtitleInfo  subtitle info handle
+*    @param[in]       i4Index GUINT32  stream index
+*    @param[out]  peCodecID E_MSDK_AVCODEC* subtitle stream codec
+*
+*    
+*
+*    @return    MRESULT  define in msdk_error.h
+*               
+*
+*    @see     MediaGraph_QueryInterface()
+*    @see     msdk_error.h
+*    @see    E_MSDK_AVCODEC
+*
+**/
+MRESULT     SubtitleInfo_GetCodec(HSUBTITLEINFO hSubtitleInfo, GINT32 i4Index, 
+                                  E_MSDK_AVCODEC *peCodecID);
+
+/**
 *    @brief get specify subtitle stream language
 *
 *    @param[in]     hSubtitleInfo  subtitle info handle
@@ -137,9 +157,25 @@ MRESULT     SubtitleInfo_GetLanguage(HSUBTITLEINFO hSubtitleInfo, GINT32 i4Index
 
 
 /**
- * @addtogroup MediaCtrl
+ * @addtogroup mediaCtrl
  * @{
  */
+
+/**
+*    @brief set alpha for subtitle
+*
+*    @param[in]     hSubtitleCtrl  subtitle control handle
+*    @param[in]      uAlpha GUINT alpha value for subtitle 
+*
+*    
+*    @return    MRESULT  define in msdk_error.h
+*               
+*
+*    @see     MediaGraph_QueryInterface()
+*    @see     msdk_error.h
+*
+**/
+MRESULT     SubtitleCtrl_SetAlpha(HSUBTITLECTRL hSubtitleCtrl, GUINT8 uAlpha);
 
 
 /**
@@ -225,6 +261,8 @@ MRESULT     SubtitleCtrl_OpenSubtitle(HSUBTITLECTRL hSubtitleCtrl);
 **/
 MRESULT SubtitleCtrl_SetCodePage(HSUBTITLECTRL hSubtitleCtrl, E_MSDK_CODEPAGE_SET  eCodePage);
 
+
+
 #if ENABLE_ISDBT
 
 /**
@@ -242,9 +280,25 @@ MRESULT SubtitleCtrl_SetCodePage(HSUBTITLECTRL hSubtitleCtrl, E_MSDK_CODEPAGE_SE
 *    @note     this interface is only for ISDBT
 **/
 
-_declspec(dllexport) MRESULT     SubtitleCtrl_SetCCDefaultLang(HSUBTITLECTRL hSubtitleCtrl,UINT32 u4DefaultLang);
+_declspec(dllexport) MRESULT    SubtitleCtrl_SetCCDefaultLang(HSUBTITLECTRL hSubtitleCtrl,UINT32 u4DefaultLang);
 #endif
 
+/**
+*    @brief move subtitle to specified position
+*
+*    @param[in]     hSubtitleCtrl  subtitle control handle
+*    @param[in]    i4X GUINT32 x coordinate value
+*    @param[in]    i4Y GUINT32 y coordinate value
+*    @return    MRESULT  define in msdk_error.h
+*               
+*
+*    @see     MediaGraph_QueryInterface()
+*    @see     msdk_error.h
+*
+*    @note   not implemented
+*
+**/
+MRESULT     SubtitleCtrl_Move(HSUBTITLECTRL hSubtitleCtrl, GINT32 i4X, GINT32 i4Y);
 /**
 *@}
 */

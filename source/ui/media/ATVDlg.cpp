@@ -199,9 +199,9 @@ void CATVDlg::OnMediaEvent(UINT media_event, UINT param1, UINT param2)
 {
 	switch(media_event)
 	{
-	case AVIN_SIGNAL_CHANGE:
+	case EVT_MSDK_AVIN_SIGNAL_CHANGE:
 		break;
-	case AVIN_SIGNAL_READY:
+	case EVT_MSDK_AVIN_SIGNAL_READY:
 		m_bIsSiganlReady = TRUE;	
 		KillTimer(TIMER_ID_SHOW_SIGNAL_FLAG);
 		ShowNoSignalFlag();	
@@ -209,7 +209,7 @@ void CATVDlg::OnMediaEvent(UINT media_event, UINT param1, UINT param2)
 		SetTimer(TIMER_ID_AUTO_FULLSCREEN, AUTO_FULLSCREEN_TIME);
 		UpdateVideoParams();
 		break;
-	case AVIN_SIGNAL_LOST:
+	case EVT_MSDK_AVIN_SIGNAL_LOST:
 		m_bIsSiganlReady = FALSE;
 		SetTimer(TIMER_ID_SHOW_SIGNAL_FLAG, 1000);		
 		UpdateVideoParams();
@@ -223,14 +223,14 @@ void CATVDlg::OnMediaEvent(UINT media_event, UINT param1, UINT param2)
 void CATVDlg::SetVideoScale()
 {
 	RECT rc;
-	E_AVIN_SIGNAL_MODE_T mode = CMsdkRender::GetInstance()->AGetSignalModeTV();
-	if (mode == AVIN_SIGNAL_PAL)
+	MSDK_AVIN_SIGNAL_MODE_T mode = CMsdkRender::GetInstance()->AGetSignalModeTV();
+	if (mode == MSDK_AVIN_SIGNAL_PAL)
 	{
 		::SetRect(&rc, 10, 4, 714, 576);		// 720X576
 		CMsdkRender::GetInstance()->SetVideoScaleTV(&rc);
 	}
-	else if (mode == AVIN_SIGNAL_PAL_M
-		|| mode == AVIN_SIGNAL_NTSC)
+	else if (mode == MSDK_AVIN_SIGNAL_PAL_M
+		|| mode == MSDK_AVIN_SIGNAL_NTSC)
 	{
 		::SetRect(&rc, 10, 4, 714, 576);		// 720X480
 		CMsdkRender::GetInstance()->SetVideoScaleTV(&rc);

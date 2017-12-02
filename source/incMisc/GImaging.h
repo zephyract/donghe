@@ -436,7 +436,6 @@ GVOID       GDestroyBitmap(GHANDLE hBitmap);
 *
 **/
 GVOID       GRegisterImagingNotifyWnd(HWND hWnd, GUINT32 u4Msg);
-GVOID       GUnRegisterImagingNotifyWnd(HWND hWnd);
 
 
 #ifdef __cplusplus

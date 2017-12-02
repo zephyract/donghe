@@ -53,13 +53,13 @@
  *
  * Last changed:
  * ------------- 
- * $Author: dejun.liu $ 
+ * $Author: xiaozhou.huang $ 
  *
  * $Modtime: $  
  *
  * Modify by jian.wang (mtk40390)
  
- * $Revision: #1 $
+ * $Revision: #2 $
 ****************************************************************************/
 
 #ifndef _BZS_CALL_H_
@@ -87,7 +87,7 @@
 #define MAX_NUM_INDICATOR            20
 #define MAX_LEN_AT_CMD                64
 #define MAX_LEN_PHONEREC_NAME       128
-#define MAX_NUM_PHONE               2
+#define MAX_NUM_PHONE               3
 #define TEL_NAME_UNKNOWN            L"UNKNOWN"
 #define DEFAULT_AUTO_ANSWER_CALL_MILLSECS    5000
 #define DEFAULT_INCONING_CALL_MILLSECS    6000
@@ -133,13 +133,15 @@ typedef enum
     CALLMANAGER_CALLSTATE_INCOMING,
     CALLMANAGER_CALLSTATE_DIALING,
     CALLMANAGER_CALLSTATE_SPEAKING,
+    CALLMANAGER_CALLSTATE_HELD,
+    CALLMANAGER_CALLSTATE_MULTIPLE,
     NUM_OF_CALLMANAGER_CALLSTATE,
 } E_BZMWCALLMANAGER_CALLSTATE_T;
 
 
 typedef struct
 {
-    //E_BT_CALL_STATUS_T          eTelStatus;
+    UINT8 u1Index;      
     E_BZMWCALLMANAGER_CALLSTATE_T eTelStatus;
     E_BT_CALLDIRECTION_T      eTelDir;
     wchar_t                   wszTelNumber[MAX_LEN_PHONE_NUMBER];
@@ -191,7 +193,18 @@ typedef enum
     NUM_OF_BZMWCALLCMD
 } E_BZMWCALLCMD_T;
 
+typedef struct{
+    DWORD u4CallCount;
+    CALLINFO_T rTelInfo[MAX_NUM_PHONE];
+}CALL_LIST;
 
+typedef enum{
+    REJECT_WAITING_CALL = 1,
+    RELEASE_HOLD_CALL,
+    RELEASE_ACTIVE_CALL,
+    ACCEPT_WAITING_CALL,
+    ALTERNATE_CALL
+}THREE_WAY_CALLING_CMD;
 
 
 

@@ -5,7 +5,7 @@
 #include "config.h"
 
 // static functions
-E_AVIN_DEST_TYPE_T _GetASinkType(DVP_SINK sink_type);
+E_MSDK_SINK_TYPE _GetASinkType(DVP_SINK sink_type);
 E_MSDK_SINK_TYPE _GetVSinkType(DVP_SINK sink_type);
 
 CMsdkRender::CMsdkRender(void)
@@ -59,40 +59,33 @@ BOOL CMsdkRender::Initialize(HWND hWnd)
 		goto LEXIT;
 	}
 
-	if (S_AVIN_OK != AVIN_Init())
-	{
-		TRACE(L"AVIN_Init() fail.\n");
-		goto LEXIT;
-	}
-
-
 
 	if (!CreateMediagraphFile())
 	{
 		goto LEXIT;
 	}
 
-	if (!CreateMediagraphAvin(&m_hMediaGraphAvin1V, &m_hMediaGraphAvin1A, UI_MSG_MSDK_MEDIAGRAPH_AVIN1))		// avin1
+	if (!CreateMediagraphAvin(&m_hMediaGraphAvin1V, &m_hMediaGraphAvin1A))		// avin1
 	{
 		goto LEXIT;
 	}
 
-	if (!CreateMediagraphAvin(&m_hMediaGraphAvin2V, &m_hMediaGraphAvin2A, UI_MSG_MSDK_MEDIAGRAPH_AVIN2))		// avin2
+	if (!CreateMediagraphAvin(&m_hMediaGraphAvin2V, &m_hMediaGraphAvin2A))		// avin2
 	{
 		goto LEXIT;
 	}
 
-	if (!CreateMediagraphAvin(NULL, &m_hMediaGraphFM, 0))	// FM
+	if (!CreateMediagraphAvin(NULL, &m_hMediaGraphFM))	// FM
 	{
 		goto LEXIT;
 	}
 
-	if (!CreateMediagraphAvin(&m_hMediaGraphCamera, NULL, UI_MSG_MSDK_MEDIAGRAPH_AVIN_CAMERA))	// camera
+	if (!CreateMediagraphAvin(&m_hMediaGraphCamera, NULL))	// camera
 	{
 		goto LEXIT;
 	}
 
-	if (!CreateMediagraphAvin(&m_hMediaGraphTVV, &m_hMediaGraphTVA, UI_MSG_MSDK_MEDIAGRAPH_AVIN_TV))	// TV
+	if (!CreateMediagraphAvin(&m_hMediaGraphTVV, &m_hMediaGraphTVA))	// TV
 	{
 		goto LEXIT;
 	}
@@ -103,20 +96,55 @@ LEXIT:
 }
 
 
-BOOL CMsdkRender::CreateMediagraphAvin(HMEDIAGRAPH *phMediaGraphV, HMEDIAGRAPH *phMediaGraphA, UINT msgNotify)
+BOOL CMsdkRender::CreateMediagraphAvin(HMEDIAGRAPH *phMediaGraphV, HMEDIAGRAPH *phMediaGraphA)
 {
+	BOOL		ret = FALSE;
+
+	MRESULT hResult;
 	if (phMediaGraphA)
 	{
-		*phMediaGraphA = AVIN_Create();
+		hResult = MediaGraph_Create(phMediaGraphA);
+		if (S_MSDK_OK != hResult)
+		{
+			goto LEXIT;
+		}
 	}
 
 	if (phMediaGraphV)
 	{
-		*phMediaGraphV = AVIN_Create();
-		AVIN_SetNotifyWindow(*phMediaGraphV, m_hwnd, msgNotify);
+		hResult = MediaGraph_Create(phMediaGraphV);
+		if (S_MSDK_OK != hResult)
+		{
+			goto LEXIT;
+		}
+
+		hResult = MediaGraph_RegisterNotifyWindow(*phMediaGraphV, m_hwnd, UI_MSG_MSDK_MEDIAGRAPH_AVIN);
+		if (S_MSDK_OK != hResult)
+		{
+			goto LEXIT;
+		}
+
+		MG_CONFIG_T  rConfig; 
+		if (S_MSDK_OK == MediaGraph_GetConfig(*phMediaGraphV, &rConfig))
+		{
+			rConfig.u4MediaPosNotifyFreq = 1;
+			hResult = MediaGraph_SetConfig(*phMediaGraphV, &rConfig);
+			if (S_MSDK_OK != hResult)
+			{
+				goto LEXIT;
+			}
+		}
+
+		hResult = MediaGraph_AddListener(*phMediaGraphV, CMsdkRender::MediaEventListenerAvin, (GUINT32)CMsdkRender::GetInstance());
+		if (S_MSDK_OK != hResult)
+		{
+			goto LEXIT;
+		}
 	}
 
-	return TRUE;
+	ret = TRUE;
+LEXIT:
+	return ret;
 }
 
 
@@ -196,13 +224,14 @@ LEXIT:
 	return ret;
 }
 
-static void _ReleaseAvinHandle(HAVINST *pHAvinst)
+static void _ReleaseAvinHandle(HMEDIAGRAPH *phGraph)
 {
-	if (pHAvinst && *pHAvinst)
+	if (phGraph && *phGraph)
 	{
-		AVIN_Stop(*pHAvinst);
-		AVIN_Release(*pHAvinst);
-		*pHAvinst = NULL;
+		MediaCtrl_StopAvin(*phGraph);			
+		MediaGraph_Clear(*phGraph);
+		MediaGraph_Release(*phGraph);
+		*phGraph = NULL;
 	}
 }
 
@@ -233,9 +262,7 @@ void CMsdkRender::Uninitialize()
 	_ReleaseAvinHandle(&m_hMediaGraphTVA);
 	_ReleaseAvinHandle(&m_hMediaGraphFM);
 
-	MSDK_Uninit();
-	AVIN_DeInit();
-	
+	MSDK_Uninit();	
 }
 
 
@@ -332,27 +359,27 @@ BOOL CMsdkRender::FIsMediaTypeSupport()
 
 
 
-MRESULT CMsdkRender::MediaEventListenerAvin(UINT msgNotify, GUINT32 u4Evt, 
+MRESULT CMsdkRender::MediaEventListenerAvin(HMEDIAGRAPH hMediaGraph, GUINT32 u4Evt, 
 											GUINT32 u4Param1, GUINT32 u4Param2, 
 											GUINT32 u4CustomData)
 {
 	CMsdkRender *pthis = (CMsdkRender *)u4CustomData;
 	if (pthis)
 	{
-		pthis->OnMediaEventAvin(msgNotify, u4Evt, u4Param1, u4Param2);
+		pthis->OnMediaEventAvin(hMediaGraph, u4Evt, u4Param1, u4Param2);
 	}
 	return (S_MSDK_OK);
 }
 
 
-void CMsdkRender::OnMediaEventAvin(UINT msgNotify, UINT media_event, UINT param1, UINT param2)
+void CMsdkRender::OnMediaEventAvin(HMEDIAGRAPH hMediaGraph, UINT media_event, UINT param1, UINT param2)
 { 
 	switch(media_event)
 	{
-	case AVIN_SIGNAL_CHANGE:
-	case AVIN_SIGNAL_READY:
+	case EVT_MSDK_AVIN_SIGNAL_CHANGE:
+	case EVT_MSDK_AVIN_SIGNAL_READY:
 		break;
-	case AVIN_SIGNAL_LOST:
+	case EVT_MSDK_AVIN_SIGNAL_LOST:
 		break;
 	default:
 		break;
@@ -360,30 +387,47 @@ void CMsdkRender::OnMediaEventAvin(UINT msgNotify, UINT media_event, UINT param1
 
 	for (int i=0; i<MAX_EVENT_HANDLER_COUNT; i++)
 	{
-		if (m_eventHandlerAvin[i].pfn != NULL && m_eventHandlerAvin[i].hMediagraph == (HMEDIAGRAPH)msgNotify)
+		if (m_eventHandlerAvin[i].pfn != NULL && m_eventHandlerAvin[i].hMediagraph == hMediaGraph)
 		{
 			(*m_eventHandlerAvin[i].pfn)(media_event, param1, param2, m_eventHandlerAvin[i].user_data);
 		}
 	}
 }
 
-
-void CMsdkRender::SetVideoScaleAvin(HAVINST hMediaGraph, RECT *prc)
+MSDK_AVIN_SIGNAL_MODE_T CMsdkRender::GetSignalModeAvin(HMEDIAGRAPH hMediaGraph)
 {
-	if (hMediaGraph == NULL || prc == NULL)
+	MSDK_AVIN_SIGNAL_MODE_T mode = MSDK_AVIN_SIGNAL_NONE;
+
+	if (hMediaGraph != NULL)
+	{
+		AvinInfo_GetSignalMode(hMediaGraph, &mode);
+	}
+
+	return mode;
+}
+void CMsdkRender::SetVideoScaleAvin(HMEDIAGRAPH hMediaGraph, RECT *prc)
+{
+	if (hMediaGraph == NULL)
 	{
 		return;
 	}
 
-	AVIN_SetSourceRect(hMediaGraph,AVIN_DEST_FRONT,prc);
+	MSDK_SCALE_INFO_T t;
+	memset(&t, 0, sizeof(MSDK_SCALE_INFO_T));
+	if (prc == NULL)		// 关闭剪裁
+	{
+		t.eSinkType = MSDK_SINK_FRONT;
+		t.fgAbortScale = TRUE;
+		MediaGraph_SetScale(hMediaGraph, &t);
+	}
+	else
+	{
+		t.fgAbortScale = FALSE;
+		t.rRect = *prc;		// 720X576
+		MediaGraph_SetScale(hMediaGraph, &t);
+	}
 }
 
-E_AVIN_SIGNAL_MODE_T CMsdkRender::GetSignalModeAvin(HAVINST hMediaGraph)
-{
-	E_AVIN_SIGNAL_MODE_T eSigMode = AVIN_SIGNAL_NONE;
-	AVIN_GetVideoSignalMode(hMediaGraph, &eSigMode);
-	return eSigMode;
-}
 
 BOOL CMsdkRender::FSetSourceFile(LPCTSTR lpszFilePath)
 {
@@ -427,10 +471,9 @@ BOOL CMsdkRender::FSetSourceFile(LPCTSTR lpszFilePath)
 	return FALSE;
 }
 
-void CMsdkRender::HandleEventAvin(UINT msgNotify, UINT u4Event)
+void CMsdkRender::HandleEventAvin(HMEDIAGRAPH hMediaGraph)
 {
-	// 只是为了保持与3360的接口一致,第3，4个参数是没有作用的
-	CMsdkRender::MediaEventListenerAvin(msgNotify, u4Event, 0, 0, (GUINT32)this);
+	MediaGraph_HandleEvent(hMediaGraph);
 }
 
 void CMsdkRender::HandleEventF()
@@ -738,7 +781,16 @@ BOOL CMsdkRender::FSetCurrentSubtitle(INT current)
 
 BOOL CMsdkRender::FSetSubtitleCodePage(E_MSDK_CODEPAGE_SET eCodePage)
 {
-	return (S_MSDK_OK == MSDK_SetCodePage(eCodePage));
+	HSUBTITLECTRL hSubtitleCtrl = NULL;
+	MSDK_IID    iid = IID_MSDK_SUBTITLECTRL;
+
+	if (S_MSDK_OK == MediaGraph_QueryInterface(m_hMediaGraphFile, &iid, &hSubtitleCtrl))
+	{
+		return (S_MSDK_OK == SubtitleCtrl_SetCodePage(hSubtitleCtrl, eCodePage));
+	}
+
+	return FALSE;
+
 }
 
 BOOL CMsdkRender::FGetMediaInfo(MSDK_MEDIA_INFO_T* pinfo)
@@ -790,6 +842,13 @@ void CMsdkRender::FStopnClear()
 {
 	// 跟FStopSrc()是一样的代码,但语义不一样
 	FStopSrc();
+}
+
+DWORD CMsdkRender::FGetCapabilites()
+{
+	DWORD result = 0;
+	MediaCtrl_GetCapabilites(m_hMediaGraphFile, &result);
+	return result;
 }
 
 BOOL CMsdkRender::FIsWmaPlaying()
@@ -853,37 +912,53 @@ void CMsdkRender::OnTimer(UINT_PTR nIDEvent)
 
 //////////////////////////////   AVIN   //////////////////////////////////////////////
 
-void CMsdkRender::OpenAvin(HMEDIAGRAPH *phMediaGraphV, E_AVIN_SOURCE_CHANNEL_T srcV, 
-						   HMEDIAGRAPH *phMediaGraphA, E_AVIN_SOURCE_CHANNEL_T srcA, DVP_SINK sink_type, BOOL bInitShow)
+void CMsdkRender::OpenAvin(HMEDIAGRAPH *phMediaGraphV, E_MSDK_AVIN_VINDEX srcV, 
+						   HMEDIAGRAPH *phMediaGraphA, E_MSDK_AVIN_AINDEX srcA, DVP_SINK sink_type, BOOL bInitShow)
 {
-	if (phMediaGraphA && srcA != AVIN_CHANNEL_NONE)
+	MSDK_AVIN_SINK_INFO_T	msi;
+	memset(&msi, 0, sizeof(MSDK_AVIN_SINK_INFO_T));
+	msi.eMode = MSDK_DRAM;
+
+	// front
+	SetRect(&msi.rFrontDestRect,0, 0, 800, 480);
+	msi.u4FrontFlag = (bInitShow ? DDOVER_SHOW : DDOVER_HIDE)| DDOVER_KEYSRCOVERRIDE;
+	msi.rFrontOvfx.dckSrcColorkey.dwColorSpaceHighValue = 0;
+	msi.rFrontOvfx.dckSrcColorkey.dwColorSpaceLowValue = 0;
+
+	// rear
+	SetRect(&msi.rRearDestRect,0, 0, 720, 480);
+	msi.u4RearFlag = DDOVER_SHOW| DDOVER_KEYSRCOVERRIDE;
+	msi.rRearOvfx.dckSrcColorkey.dwColorSpaceHighValue = 0;
+	msi.rRearOvfx.dckSrcColorkey.dwColorSpaceLowValue = 0;
+
+	if (phMediaGraphA && srcA != MSDK_AVIN_ANONE)
 	{
-		AVIN_SetSource( *phMediaGraphA, AVIN_SOURCE_A, AVIN_CHANNEL_NONE, srcA); 
-		AVIN_SetDestnation(*phMediaGraphA, (E_AVIN_DEST_TYPE_T)_GetASinkType(sink_type));
+		msi.eSink = _GetASinkType(sink_type);
+		MediaGraph_SetAudioInSource(*phMediaGraphA, srcA, &msi);
 	}
 
-	if (phMediaGraphV && srcV != AVIN_CHANNEL_NONE)
+	if (phMediaGraphV && srcV != MSDK_AVIN_VNONE)
 	{
-		AVIN_SetSource(*phMediaGraphV, AVIN_SOURCE_V, srcV, AVIN_CHANNEL_NONE); 
-		//AVIN_SetDestnation(*phMediaGraphV, (E_AVIN_DEST_TYPE_T)_GetASinkType(sink_type));	
-		RECT rc = {0, 0, WceUiGetScreenWidth(), WceUiGetScreenHeight()};
-		AVIN_SetDestinationRect(*phMediaGraphV, (E_AVIN_DEST_TYPE_T)_GetASinkType(sink_type), &rc);	
-
+		msi.eSink = _GetVSinkType(sink_type);
+		MediaGraph_SetVideoInSource(*phMediaGraphV, srcV, &msi);
+		MediaGraph_SetVideoInInfo(*phMediaGraphV, &msi);
 	}
-
 }
 
 void CMsdkRender::CloseAvin(HMEDIAGRAPH *phMediaGraphV, HMEDIAGRAPH *phMediaGraphA)
 {
-	if (phMediaGraphV && *phMediaGraphV != NULL)
+	if (phMediaGraphA)
 	{
-		AVIN_Stop(*phMediaGraphV);
+		MediaCtrl_StopAvin(*phMediaGraphA);
+		MediaGraph_Clear(*phMediaGraphA);
 	}
 
-	if (phMediaGraphA && *phMediaGraphA != NULL)
+	if (phMediaGraphV)
 	{
-		AVIN_Stop(*phMediaGraphA);
+		MediaCtrl_StopAvin(*phMediaGraphV);
+		MediaGraph_Clear(*phMediaGraphV);
 	}
+
 }
 
 
@@ -894,11 +969,70 @@ void CMsdkRender::ShowVideoAvin(BOOL bShow, HMEDIAGRAPH *phMediaGraphV, DVP_SINK
 		return;
 	}
 
+	MSDK_AVIN_SINK_INFO_T	msi;
+	memset(&msi, 0, sizeof(MSDK_AVIN_SINK_INFO_T));
 	if (prect)
 	{
-		AVIN_SetDestinationRect(*phMediaGraphV, AVIN_DEST_FRONT, prect);
+		msi.rFrontDestRect = *prect;
 	}
-	AVIN_SetVideoVisible(*phMediaGraphV, AVIN_DEST_FRONT, bShow);
+	else
+	{
+		SetRect(&msi.rFrontDestRect,0, 0, 800, 480);
+	}
+	msi.eSink = MSDK_SINK_FRONT;
+	msi.u4FrontFlag = bShow ? DDOVER_SHOW : DDOVER_HIDE;
+	MediaGraph_SetVideoInInfo(*phMediaGraphV, &msi);
+
+/**** 暂时不用下面的策略，会引起AUX的显示和隐藏有延时
+
+	// 按下面的策略,倒车来时，也只需隐藏视频就可以了，不需另外的接口来处理
+	// AVIN显示或隐藏策略:
+	// 如果是DVP_SINK_FRONT，则需stopavin,显示时重新play, 因为后排的可能需处于DVP_SINK_FRONTV_REAR状态
+	// 如果是DVP_SINK_REAR，或DVP_SINK_FRONTV_REAR,DVP_SINK_FRONT_REAR, 则把图像转成DVP_SINK_REAR状态
+
+	if (bShow)
+	{
+		if (sink_type == DVP_SINK_FRONT)
+		{
+			MediaCtrl_PlayAvin(*phMediaGraphV);
+		}
+		else if (sink_type == DVP_SINK_REAR )
+		{
+			MediaGraph_SwitchAVInSink(*phMediaGraphV, MSDK_SINK_REAR, MSDK_BYPASS);
+		}
+		else if (sink_type == DVP_SINK_FRONTV_REAR || sink_type == DVP_SINK_FRONT_REAR)
+		{
+			MediaGraph_SwitchAVInSink(*phMediaGraphV, MSDK_SINK_FRONT_REAR, MSDK_BYPASS);
+		}
+
+		MSDK_AVIN_SINK_INFO_T	msi;
+		memset(&msi, 0, sizeof(MSDK_AVIN_SINK_INFO_T));
+		if (prect)
+		{
+			msi.rFrontDestRect = *prect;
+		}
+		else
+		{
+			SetRect(&msi.rFrontDestRect,0, 0, 800, 480);
+		}
+		msi.eSink = MSDK_SINK_FRONT;
+		msi.u4FrontFlag = DDOVER_SHOW;
+		MediaGraph_SetVideoInInfo(*phMediaGraphV, &msi);
+
+	}
+	else
+	{
+		if (sink_type == DVP_SINK_FRONT)
+		{
+			MediaCtrl_StopAvin(*phMediaGraphV);
+		}
+		else if (sink_type == DVP_SINK_REAR || sink_type == DVP_SINK_FRONTV_REAR || sink_type == DVP_SINK_FRONT_REAR)
+		{
+			MediaGraph_SwitchAVInSink(*phMediaGraphV, MSDK_SINK_REAR, MSDK_BYPASS);
+		}
+	}
+
+****/
 }
 
 void CMsdkRender::AOnCamera(BOOL bStart, SOURCE_ID sid, DVP_SINK sink_type)
@@ -930,11 +1064,11 @@ void CMsdkRender::AOnCamera(BOOL bStart, SOURCE_ID sid, DVP_SINK sink_type)
 		}
 		else if (sink_type == DVP_SINK_REAR )
 		{
-			AVIN_SetDestnation(hMediaGraphV, AVIN_DEST_REAR);
+			MediaGraph_SwitchAVInSink(hMediaGraphV, MSDK_SINK_REAR, MSDK_BYPASS);
 		}
 		else if (sink_type == DVP_SINK_FRONTV_REAR || sink_type == DVP_SINK_FRONT_REAR)
 		{
-			AVIN_SetDestnation(hMediaGraphV, AVIN_DEST_FRONT_REAR);
+			MediaGraph_SwitchAVInSink(hMediaGraphV, MSDK_SINK_FRONT_REAR, MSDK_BYPASS);
 		}
 	}
 	else	// 开始倒车
@@ -945,8 +1079,7 @@ void CMsdkRender::AOnCamera(BOOL bStart, SOURCE_ID sid, DVP_SINK sink_type)
 		}
 		else if (sink_type == DVP_SINK_REAR || sink_type == DVP_SINK_FRONTV_REAR || sink_type == DVP_SINK_FRONT_REAR)
 		{
-			//MediaGraph_SwitchAVInSink(hMediaGraphV, MSDK_SINK_REAR, MSDK_BYPASS);
-			AVIN_SetDestnation(hMediaGraphV, AVIN_DEST_REAR);
+			MediaGraph_SwitchAVInSink(hMediaGraphV, MSDK_SINK_REAR, MSDK_BYPASS);
 		}
 	}
 }
@@ -956,12 +1089,12 @@ void CMsdkRender::SetSinkAvin(HMEDIAGRAPH *phMediaGraphV, HMEDIAGRAPH *phMediaGr
 	// 前后排转换时,如果前排隐藏了,有可能已经将其stop了
 	if (phMediaGraphV)
 	{
-// 		E_MSDK_MGSTATE state = MSDK_MGSTATE_STOP;
-// 		MediaGraph_GetState(*phMediaGraphV, &state);
-// 		if (state != MSDK_MGSTATE_PLAYING )
-// 		{
-// 			AVIN_Play(*phMediaGraphV);
-// 		}
+		E_MSDK_MGSTATE state = MSDK_MGSTATE_STOP;
+		MediaGraph_GetState(*phMediaGraphV, &state);
+		if (state != MSDK_MGSTATE_PLAYING )
+		{
+			MediaCtrl_PlayAvin(*phMediaGraphV);
+		}
 	}
 
 	if (sink_type == DVP_SINK_FRONT 
@@ -970,32 +1103,34 @@ void CMsdkRender::SetSinkAvin(HMEDIAGRAPH *phMediaGraphV, HMEDIAGRAPH *phMediaGr
 	{
 		if (phMediaGraphA)
 		{
-			AVIN_SetDestnation(*phMediaGraphA, E_AVIN_DEST_TYPE_T(sink_type-1));
+			MediaGraph_SwitchAVInSink(*phMediaGraphA, (E_MSDK_SINK_TYPE)sink_type, MSDK_BYPASS);
 		}
 		if (phMediaGraphV)
 		{
-			AVIN_SetDestnation(*phMediaGraphV, E_AVIN_DEST_TYPE_T(sink_type-1));
+			MediaGraph_SwitchAVInSink(*phMediaGraphV, (E_MSDK_SINK_TYPE)sink_type, MSDK_BYPASS);
 		}
 	}
 	else if (sink_type == DVP_SINK_FRONTV_REAR)
 	{
 		if (phMediaGraphA)
 		{
-			AVIN_SetDestnation(*phMediaGraphA, AVIN_DEST_REAR);
+			MediaGraph_SwitchAVInSink(*phMediaGraphA, MSDK_SINK_REAR, MSDK_BYPASS);
 		}
 		if (phMediaGraphV)
 		{
-			AVIN_SetDestnation(*phMediaGraphV, AVIN_DEST_FRONT_REAR);
+			MediaGraph_SwitchAVInSink(*phMediaGraphV, MSDK_SINK_FRONT_REAR, MSDK_BYPASS);
 		}
 	}
+
+	//OnShowVideo(TRUE);
 }
 
 
 
 void CMsdkRender::ALaunchAvin1Src( DVP_SINK sink_type)
 {
-	OpenAvin(&m_hMediaGraphAvin1V, (E_AVIN_SOURCE_CHANNEL_T)config::get_config_avin()->avin1_v,
-		&m_hMediaGraphAvin1A, (E_AVIN_SOURCE_CHANNEL_T)config::get_config_avin()->avin1_a, sink_type);
+	OpenAvin(&m_hMediaGraphAvin1V, (E_MSDK_AVIN_VINDEX)config::get_config_avin()->avin1_v,
+		&m_hMediaGraphAvin1A, (E_MSDK_AVIN_AINDEX)config::get_config_avin()->avin1_a, sink_type);
 }
 
 void CMsdkRender::AStopAvin1Src()
@@ -1016,7 +1151,7 @@ void CMsdkRender::ASetSinkAvin1(DVP_SINK sink_type)
 BOOL CMsdkRender::AIsSignalReadyAvin1()
 {
 	BOOL isReady = FALSE;
-	AVIN_IsVideoSignalReady(m_hMediaGraphAvin1V, &isReady);
+	MediaGraph_VdoInGetIsSignalReady(m_hMediaGraphAvin1V, &isReady);
 	return isReady;
 }
 
@@ -1025,26 +1160,26 @@ void CMsdkRender::SetVideoScaleAvin1(RECT *prc)
 	SetVideoScaleAvin(m_hMediaGraphAvin1V, prc);
 }
 
-E_AVIN_SIGNAL_MODE_T CMsdkRender::AGetSignalModeAvin1()
+MSDK_AVIN_SIGNAL_MODE_T CMsdkRender::AGetSignalModeAvin1()
 {
 	return GetSignalModeAvin(m_hMediaGraphAvin1V);
 }
 
 void CMsdkRender::ACloseAudioAvin1()
 {
-	AVIN_Stop(m_hMediaGraphAvin1A);
+	MediaCtrl_StopAvin(m_hMediaGraphAvin1A);
 }
 
 void CMsdkRender::AOpenAudioAvin1()
 {
-	AVIN_Play(m_hMediaGraphAvin1A);
+	MediaCtrl_PlayAvin(m_hMediaGraphAvin1A);
 }
 
 
 void CMsdkRender::ALaunchAvin2Src( DVP_SINK sink_type)
 {
- 	OpenAvin(&m_hMediaGraphAvin2V, (E_AVIN_SOURCE_CHANNEL_T)config::get_config_avin()->avin2_v,
- 		&m_hMediaGraphAvin2A, (E_AVIN_SOURCE_CHANNEL_T)config::get_config_avin()->avin2_a, sink_type);
+	OpenAvin(&m_hMediaGraphAvin2V, (E_MSDK_AVIN_VINDEX)config::get_config_avin()->avin2_v,
+		&m_hMediaGraphAvin2A, (E_MSDK_AVIN_AINDEX)config::get_config_avin()->avin2_a, sink_type);
 }
 
 void CMsdkRender::AStopAvin2Src()
@@ -1065,7 +1200,7 @@ void CMsdkRender::ASetSinkAvin2(DVP_SINK sink_type)
 BOOL CMsdkRender::AIsSignalReadyAvin2()
 {
 	BOOL isReady = FALSE;
-	AVIN_IsVideoSignalReady(m_hMediaGraphAvin2V, &isReady);
+	MediaGraph_VdoInGetIsSignalReady(m_hMediaGraphAvin2V, &isReady);
 	return isReady;
 }
 
@@ -1074,26 +1209,26 @@ void CMsdkRender::SetVideoScaleAvin2(RECT *prc)
 	SetVideoScaleAvin(m_hMediaGraphAvin2V, prc);
 }
 
-E_AVIN_SIGNAL_MODE_T CMsdkRender::AGetSignalModeAvin2()
+MSDK_AVIN_SIGNAL_MODE_T CMsdkRender::AGetSignalModeAvin2()
 {
 	return GetSignalModeAvin(m_hMediaGraphAvin2V);
 }
 
 void CMsdkRender::ACloseAudioAvin2()
 {
-	AVIN_Stop(m_hMediaGraphAvin2A);
+	MediaCtrl_StopAvin(m_hMediaGraphAvin2A);
 }
 
 void CMsdkRender::AOpenAudioAvin2()
 {
-	AVIN_Play(m_hMediaGraphAvin2A);
+	MediaCtrl_PlayAvin(m_hMediaGraphAvin2A);
 }
 
 //
 void CMsdkRender::ALaunchTVSrc( DVP_SINK sink_type)
 {
-	OpenAvin(&m_hMediaGraphTVV, (E_AVIN_SOURCE_CHANNEL_T)config::get_config_avin()->tv_v,
-		&m_hMediaGraphTVA, (E_AVIN_SOURCE_CHANNEL_T)config::get_config_avin()->tv_a, sink_type);
+	OpenAvin(&m_hMediaGraphTVV, (E_MSDK_AVIN_VINDEX)config::get_config_avin()->tv_v,
+		&m_hMediaGraphTVA, (E_MSDK_AVIN_AINDEX)config::get_config_avin()->tv_a, sink_type);
 }
 
 void CMsdkRender::AStopTVSrc()
@@ -1114,7 +1249,7 @@ void CMsdkRender::ASetSinkTV(DVP_SINK sink_type)
 BOOL CMsdkRender::AIsSignalReadyTV()
 {
 	BOOL isReady = FALSE;
-	AVIN_IsVideoSignalReady(m_hMediaGraphTVV, &isReady);
+	MediaGraph_VdoInGetIsSignalReady(m_hMediaGraphTVV, &isReady);
 	return isReady;
 }
 
@@ -1123,27 +1258,27 @@ void CMsdkRender::SetVideoScaleTV(RECT *prc)
 	SetVideoScaleAvin(m_hMediaGraphTVV, prc);
 }
 
-E_AVIN_SIGNAL_MODE_T CMsdkRender::AGetSignalModeTV()
+MSDK_AVIN_SIGNAL_MODE_T CMsdkRender::AGetSignalModeTV()
 {
 	return GetSignalModeAvin(m_hMediaGraphTVV);
 }
 
+
 void CMsdkRender::ACloseAudioTV()
 {
-	AVIN_Stop(m_hMediaGraphTVA);
+	MediaCtrl_StopAvin(m_hMediaGraphTVA);
 }
 
 void CMsdkRender::AOpenAudioTV()
 {
-	AVIN_Play(m_hMediaGraphTVA);
+	MediaCtrl_PlayAvin(m_hMediaGraphTVA);
 }
 
 //
 
 void CMsdkRender::ALaunchFMSrc()
 {
-	OpenAvin(NULL, AVIN_CHANNEL_NONE, &m_hMediaGraphFM, 
-		(E_AVIN_SOURCE_CHANNEL_T)config::get_config_avin()->fm_a, DVP_SINK_FRONT);
+	OpenAvin(NULL, MSDK_AVIN_VNONE, &m_hMediaGraphFM, (E_MSDK_AVIN_AINDEX)config::get_config_avin()->fm_a, DVP_SINK_FRONT);
 }
 
 void CMsdkRender::AStopFMSrc()
@@ -1206,13 +1341,13 @@ HMEDIAGRAPH CMsdkRender::GetAvinMediagraph(MSDK_AVIN_TYPE type)
 	switch (type)
 	{
 	case MSDK_AVIN1:
-		return (HMEDIAGRAPH)UI_MSG_MSDK_MEDIAGRAPH_AVIN1;
+		return m_hMediaGraphAvin1V;
 	case MSDK_AVIN2:
-		return (HMEDIAGRAPH)UI_MSG_MSDK_MEDIAGRAPH_AVIN2;
+		return m_hMediaGraphAvin2V;
 	case MSDK_AVIN_TV:
-		return (HMEDIAGRAPH)UI_MSG_MSDK_MEDIAGRAPH_AVIN_TV;
+		return m_hMediaGraphTVV;
 	case MSDK_AVIN_CAMERA:
-		return (HMEDIAGRAPH)UI_MSG_MSDK_MEDIAGRAPH_AVIN_CAMERA;
+		return m_hMediaGraphCamera;
 	default:
 		return NULL;
 	}
@@ -1253,20 +1388,20 @@ static E_MSDK_SINK_TYPE _GetVSinkType(DVP_SINK sink_type)
 }
 
 
-static E_AVIN_DEST_TYPE_T _GetASinkType(DVP_SINK sink_type)
+static E_MSDK_SINK_TYPE _GetASinkType(DVP_SINK sink_type)
 {
 	if (sink_type == DVP_SINK_FRONT || sink_type == DVP_SINK_REAR || sink_type == DVP_SINK_FRONT_REAR)
 	{
-		return (E_AVIN_DEST_TYPE_T)(sink_type-1);
+		return (E_MSDK_SINK_TYPE)sink_type;
 	}
 	else if (sink_type == DVP_SINK_FRONTV_REAR)
 	{
-		return AVIN_DEST_REAR;
+		return MSDK_SINK_REAR;
 	}
 	else	// 如果是未知类型，直接设为前后排输出
 	{
 		ASSERT(FALSE);
-		return AVIN_DEST_FRONT_REAR;
+		return MSDK_SINK_FRONT_REAR;
 	}
 }
 
@@ -1274,7 +1409,7 @@ static E_AVIN_DEST_TYPE_T _GetASinkType(DVP_SINK sink_type)
 
 void CMsdkRender::AOpenCameraChannel()
 {
-	OpenAvin(&m_hMediaGraphCamera, (E_AVIN_SOURCE_CHANNEL_T)config::get_config_avin()->camera_v, NULL, AVIN_CHANNEL_NONE, DVP_SINK_FRONT, TRUE);
+	OpenAvin(&m_hMediaGraphCamera, (E_MSDK_AVIN_VINDEX)config::get_config_avin()->camera_v, NULL, MSDK_AVIN_ANONE, DVP_SINK_FRONT, TRUE);
 }
 
 void CMsdkRender::ACloseCameraChannel()
@@ -1282,19 +1417,24 @@ void CMsdkRender::ACloseCameraChannel()
 	CloseAvin(&m_hMediaGraphCamera, NULL);
 }
 
-void CMsdkRender::ASetCameraMirror(E_AVIN_MIRROR_TYPE_T mirror)
+void CMsdkRender::ASetCameraMirror(MSDK_AVIN_MIRROR_E mirror)
 {
-	AVIN_SetMirror(m_hMediaGraphCamera, mirror);
+	AvinCtrl_SetMirror(m_hMediaGraphCamera, mirror);
 }
 
 BOOL CMsdkRender::AIsSignalReadyCamera()
 {
 	BOOL isReady = FALSE;
-	AVIN_IsVideoSignalReady(m_hMediaGraphCamera, &isReady);
+	MediaGraph_VdoInGetIsSignalReady(m_hMediaGraphCamera, &isReady);
 	return isReady;
 }
 
 void CMsdkRender::SetVideoScaleCamera(RECT *prc)
 {
 	SetVideoScaleAvin(m_hMediaGraphCamera, prc);
+}
+
+MSDK_AVIN_SIGNAL_MODE_T CMsdkRender::AGetSignalModeCamera()
+{
+	return GetSignalModeAvin(m_hMediaGraphCamera);
 }
