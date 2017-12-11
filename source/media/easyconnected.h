@@ -61,6 +61,8 @@ public:
 	static CEasyConnected* GetInstance();
 	static void ShowWindow(BOOL bShow);
 	static BOOL LoadEasyConnected();
+	// 根据当前的系统语言返回easyconnected对应的语言ID
+	static UINT GetLanguageID();
 	// 处理EasyConnected程序发来的消息,如果处理了返回TRUE,否则返回FALSE
 	BOOL HandleMessage(UINT message, WPARAM wParam, LPARAM lParam);
 	// 向phonelink发消息
@@ -81,5 +83,4 @@ public:
 	// 返回值: 0 ~ android,  1 ~ iOS
 	int GetDeviceType();
 	int m_nDeviceType;
-
 };
