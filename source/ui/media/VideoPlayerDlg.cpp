@@ -39,7 +39,7 @@ void CVideoPlayerDlg::OnInitDialog()
 	if (pLayer)
 	{
 		pLayer->SetExtraScroll(30);
-		pLayer->SetScrollRange(0, WceUiGetScreenWidth());
+		pLayer->SetScrollRange(0, 800);
 	}
 
 	m_pLayerBadfileInfo = GetChildByName(L"badfile_info");

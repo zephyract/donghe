@@ -865,10 +865,7 @@ void CMsdkRender::OpenAvin(HMEDIAGRAPH *phMediaGraphV, E_AVIN_SOURCE_CHANNEL_T s
 	if (phMediaGraphV && srcV != AVIN_CHANNEL_NONE)
 	{
 		AVIN_SetSource(*phMediaGraphV, AVIN_SOURCE_V, srcV, AVIN_CHANNEL_NONE); 
-		//AVIN_SetDestnation(*phMediaGraphV, (E_AVIN_DEST_TYPE_T)_GetASinkType(sink_type));	
-		RECT rc = {0, 0, WceUiGetScreenWidth(), WceUiGetScreenHeight()};
-		AVIN_SetDestinationRect(*phMediaGraphV, (E_AVIN_DEST_TYPE_T)_GetASinkType(sink_type), &rc);	
-
+		AVIN_SetDestnation(*phMediaGraphV, (E_AVIN_DEST_TYPE_T)_GetASinkType(sink_type));	
 	}
 
 }
@@ -894,10 +891,6 @@ void CMsdkRender::ShowVideoAvin(BOOL bShow, HMEDIAGRAPH *phMediaGraphV, DVP_SINK
 		return;
 	}
 
-	if (prect)
-	{
-		AVIN_SetDestinationRect(*phMediaGraphV, AVIN_DEST_FRONT, prect);
-	}
 	AVIN_SetVideoVisible(*phMediaGraphV, AVIN_DEST_FRONT, bShow);
 }
 

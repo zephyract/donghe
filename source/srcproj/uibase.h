@@ -127,7 +127,6 @@ enum DLG_ID
 	//
 	CRadioDlg_ID,
 	CRadioRDSDlg_ID,
-	CRadioPtyDlg_ID,
 	//
 	CBluetoothDlg_ID,
 	CBTCallDlg_ID,
@@ -331,8 +330,6 @@ struct NAVI_SYSTEM_STATUS
 	// ¿∂—¿“Ù¡ø 
 	int   audio_bt_volume;
 	BOOL  audio_is_bt_mute;
-	// TA“Ù¡ø
-	int audio_ta_volume;
 	// gps “Ù¡ø
 	int   audio_gps_volume;
 	BOOL  audio_is_gps_mute;

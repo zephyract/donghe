@@ -42,7 +42,7 @@ void CDVDPlayerDlg::InitLayer()
 	if (pLayer)
 	{
 		pLayer->SetExtraScroll(30);
-		pLayer->SetScrollRange(0, WceUiGetScreenWidth());
+		pLayer->SetScrollRange(0, 800);
 	}
 
 	GUINT64 u8Duration = 0;
@@ -293,8 +293,6 @@ void CDVDPlayerDlg::OnLButtonDown(UINT nFlags, POINT point)
 	DVP_GetCurrentDVDMenuState(&uHiliStatus);
 	if (uHiliStatus == DVD_HL_ON)
 	{	
-		point.x = point.x * 800 / WceUiGetScreenWidth();
-		point.y = point.y * 480 / WceUiGetScreenHeight();
 		DVP_DVDClickMenuItem(MAKELPARAM(point.x, point.y));
 	}
 	else

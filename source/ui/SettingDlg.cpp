@@ -12,9 +12,6 @@
 #include "msgboxdlg.h"
 #include "RpcMCU.h"
 #include "PasswordDlg.h"
-#include "config.h"
-#include "SetRadioAreaDlg.h"
-#include "sysUtil.h"
 
 CSettingDlg::CSettingDlg(void)
 {
@@ -34,79 +31,7 @@ void CSettingDlg::OnInitDialog()
 	{
 		pLayer->SetScrollMode(SL_VERT);
 		pLayer->SetExtraScroll(30);
-		pLayer->SetScrollRange(0, WceUiGetScreenWidth()==1024 ? 600 : 457);
-	}
-
-	// calibrate
-	if (config::get_config_misc()->calibrate == 0)	// 如果不支持触摸校准,隐藏该选项
-	{
-		CWceUiButton* pcalibrate = (CWceUiButton*)GetLayerByName(L"calibrate");
-		if (pcalibrate)
-		{
-			pcalibrate->EnableButton(FALSE);
-		}
-	}
-
-}
-
-void CSettingDlg::OnDlgShow(BOOL bShow)
-{
-	if (bShow)
-	{
-		InitRDSVolume();
-	}
-}
-
-void CSettingDlg::InitRDSVolume()
-{
-	CWceUiLayer* pvolume = GetLayerByName(L"btn_rdsvolume");
-	if (pvolume == NULL)
-	{
-		return;
-	}
-
-	// RDS 音量设置项,只有支持RDS时才显示该设置项
-	if (config::get_config_misc()->rds	// 配置文件支持RDS
-		&& (protocol::get_mcu_sys_para()->get_fm_cur_region() == FQ_EUROPE
-		|| protocol::get_mcu_sys_para()->get_fm_cur_region() == FQ_SAMER1))	// 北美
-	{
-		pvolume->ShowLayer(TRUE);
-	}
-	else 
-	{
-		pvolume->ShowLayer(FALSE);
-	}
-
-
-	CWceUiSlider* pslider = (CWceUiSlider*)GetLayerByName(L"rdsvolume");
-	CWceUiLayer* pvalue = GetLayerByName(L"value_rdsvolume");
-	if (pvalue)
-	{
-		CString str;
-		str.Format(L"%d", sysutil::nss_get_instance()->audio_ta_volume);
-		pvalue->SetText(str);
-	}
-	if (pslider)
-	{
-		pslider->SetRange(0, 40);
-		pslider->SetPos(sysutil::nss_get_instance()->audio_ta_volume);
-	}
-
-}
-
-void CSettingDlg::OnSliderChange(CWceUiSlider* pslider, UINT status, UINT pos)
-{
-	if (pslider->IsEqualName(L"rdsvolume"))
-	{
-		sysutil::nss_get_instance()->audio_ta_volume = pos;
-
-		CWceUiLayer* pvalue = GetLayerByName(L"value_rdsvolume");
-		if (pvalue)
-		{
-			CString str;
-			str.Format(L"%d", sysutil::nss_get_instance()->audio_ta_volume);
-			pvalue->SetText(str);
-		}
+		pLayer->SetScrollRange(0, 345);
 	}
 }
 

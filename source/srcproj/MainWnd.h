@@ -263,7 +263,7 @@ public:
 	void OnDVDLoading(BOOL bLoading);
 
 	// 启动导航
-	BOOL LoadNavigation(BOOL bShowWarning=TRUE);
+	BOOL LoadNavigation(BOOL bShowWarning=FALSE);
 	void ShowNaviErrorMsg();	// 导航加载失败时显示对应的提示信息
 
 	// 是否在开机过程中,开机过程中如果有插拔事件,会忽略

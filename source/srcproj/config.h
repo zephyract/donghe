@@ -50,7 +50,6 @@ struct CONFIG_AUDIO
 	int media_front_volume;
 	int meida_rear_volume;
 	int bt_volume;
-	int ta_volume;
 	int gps_volume;
 	int gps_gain;
 	BOOL gps_gain_off;
@@ -189,10 +188,7 @@ struct CONFIG_MISC
 {
 	int fm_area;	// 收音区域
 	int colorful_lights;	// 是否带七彩灯功能
-	int calibrate;			// 是否带触摸校准功能
 	int parking;	// 行车禁止视频设置项
-	int rds;		// 是否支持RDS
-	int hourtime24; // 时间格式是否为24小时制
 };
 
 #define CONFIG_FILE_NAME	L"config.xml"

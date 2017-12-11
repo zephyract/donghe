@@ -37,7 +37,7 @@ void CDVDMPSPlayerDlg::InitLayer()
 	if (pLayer)
 	{
 		pLayer->SetExtraScroll(30);
-		pLayer->SetScrollRange(0, WceUiGetScreenWidth());
+		pLayer->SetScrollRange(0, 800);
 	}
 
 	GUINT64 u8Duration = 0;

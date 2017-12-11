@@ -8,7 +8,7 @@
 #include "bluetooth.h"
 #include "DlgManager.h"
 #include "OverlayDlg.h"
-#include "SetAboutDlg.h"
+
 
 CEasyConnected::CEasyConnected(void)
 : m_nDeviceType(-1)
@@ -187,19 +187,6 @@ void CEasyConnected::CloseAudio()
 {
 }
 
-UINT CEasyConnected::GetLanguageID()
-{
-	// 这个表与app定义的语言ID对应起来
-	UINT lang_table[] = {1033, 2052, 1028, 1036, 1049, 3082, 1031, 2070, 1025, 1054, 1041/*LAN_JAPANESE*/, 1055, 1040, 1045, 1037};
-	if (sysutil::nss_get_instance()->ui_lan_id>=0 
-		&& sysutil::nss_get_instance()->ui_lan_id<(sizeof(lang_table)/sizeof(lang_table[0])))
-	{
-		return lang_table[sysutil::nss_get_instance()->ui_lan_id];
-	}
-
-	return 1033;	// 如果ID非法,返回英语
-}
-
 BOOL CEasyConnected::LoadEasyConnected()
 {
 	// already loaded.
@@ -215,12 +202,7 @@ BOOL CEasyConnected::LoadEasyConnected()
 	TCHAR szPath[MAX_PATH] = L"";
 	_stprintf(szPath, L"%s\\EasyConnected\\easyconnected.exe", tzutil::GetAppPath());
 
-	TCHAR command[256];
-	CString uuid;
-	CSetAboutDlg::iGOGetDeviceCode(uuid.GetBuffer(128));
-	uuid.ReleaseBuffer();
-	_stprintf(command, L"-s[%s] -lan[%d]", uuid, GetLanguageID());
-	if (tzutil::LoadApp(szPath, command, &pi))
+	if (tzutil::LoadApp(szPath, L"-s[123456] -lan[1033]", &pi))
 	{
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);

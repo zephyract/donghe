@@ -191,7 +191,7 @@ void CVolumeManager::UpdateVolume()
 		// 后排静音,前排为AUX音量
 		SetDVPVolume(DVP_SINK_REAR, 0);
 		int gain = sysutil::nss_get_instance()->audio_is_media_front_mute ? 0 : 1;
-		UINT volume = DVP_VOLUME_AUX_FRONT_TABLE[sysutil::nss_get_instance()->audio_ta_volume];
+		UINT volume = DVP_VOLUME_AUX_FRONT_TABLE[sysutil::nss_get_instance()->audio_media_front_volume];
 		SetDVPVolume(DVP_SINK_FRONT, volume*gain);
 		// 系统静音
 		//SetWinceVolume(0);
@@ -510,11 +510,6 @@ void CVolumeManager::ShowUI(UI_VOLUME_TYPE eVolumeType, DWORD dwTime, int nStep)
 	{
 		load_str.SetTextResID(L"VOLUME_MEDIA_VOL");
 		volume = sysutil::nss_get_instance()->audio_media_front_volume;
-	}
-	else if (eVolumeType == VOLUME_TYPE_TA)
-	{
-		load_str.SetTextResID(L"VOLUME_TA_VOL");
-		volume = sysutil::nss_get_instance()->audio_ta_volume;
 	}
 	else	// VOLUME_TYPE_NULL
 	{

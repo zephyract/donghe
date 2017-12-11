@@ -95,7 +95,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="\residentflash2\app"
+				RemoteDirectory="\residentflash2\appp"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -184,7 +184,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="\residentflash2\app"
+				RemoteDirectory="\residentflash2\appp"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -380,14 +380,6 @@
 			</File>
 			<File
 				RelativePath="..\..\data\800X480\wnd\CRadioDlg.style.xml"
-				>
-			</File>
-			<File
-				RelativePath="..\..\data\800X480\wnd\CRadioPtyDlg.dlg.xml"
-				>
-			</File>
-			<File
-				RelativePath="..\..\data\800X480\wnd\CRadioPtyDlg.style.xml"
 				>
 			</File>
 			<File
@@ -900,14 +892,6 @@
 			</File>
 			<File
 				RelativePath="..\..\source\ui\RadioDlg.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\source\ui\RadioPtyDlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\source\ui\RadioPtyDlg.h"
 				>
 			</File>
 			<File

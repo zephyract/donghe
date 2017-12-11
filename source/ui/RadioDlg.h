@@ -41,14 +41,6 @@ protected:
 
 	virtual void InitLayers();
 
-	// 只有band为FM时,才显示stereo标识，AM没有stereo状态
-	void ShowStereo(BOOL bShow);
-	void ShowBand(int nBand);
-	void OnCurPresetChange(int nOld, int nCur);
-	// 检测pbutton是哪个value按钮，如果是返回索引(1~6), 如果不是返回0
-	int GetValueButtonIndex(CWceUiButton *pbutton);
-
-
 	// TA seek 时显示ta seek字样
 	void ShowTASeek(BOOL bShow);
 	void OnTASeekBegin();
@@ -80,9 +72,6 @@ protected:
 	WORD m_ruler_min_freq;
 	WORD m_ruler_max_freq;
 	BOOL m_ruler_init;
-
-	CWceUiButton* m_pLayerValue[6];
-
 };
 WCEUI_DYNCREATE_END(CRadioBaseDlg, CDvpBaseDlg);
 
@@ -111,12 +100,14 @@ protected:
 	void OnRadioPresetInfo(BOOL bForceRefresh=FALSE);
 
 	// 只有band为FM时,才显示stereo标识，AM没有stereo状态
-//	void ShowStereo(BOOL bShow);
+	void ShowStereo(BOOL bShow);
 
-//	void ShowBand(int nBand);
+	void ShowBand(int nBand);
+	// 检测pbutton是哪个value按钮，如果是返回索引(1~6), 如果不是返回0
+	int GetValueButtonIndex(CWceUiButton *pbutton);
 	void InitLayers();
 
-//	void OnCurPresetChange(int nOld, int nCur);
+	void OnCurPresetChange(int nOld, int nCur);
 
 	// PS开始或结束触发
 	BOOL m_bPSTipVisible;
@@ -127,6 +118,7 @@ protected:
 	// 收音区域变化RDS UI调整
 	void OnRadioRegionChange();
 
+	CWceUiButton* m_pLayerValue[6];
 };
 WCEUI_DYNCREATE_END(CRadioDlg, CRadioBaseDlg);
 

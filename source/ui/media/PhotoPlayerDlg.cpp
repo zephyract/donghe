@@ -44,7 +44,7 @@ void CPhotoPlayerDlg::OnInitDialog()
 
 	CWceUiPageLayer* pLayer = (CWceUiPageLayer*)GetChildByName(L"bottom_frame");
 	pLayer->SetExtraScroll(30);
-	pLayer->SetScrollRange(0, WceUiGetScreenWidth());
+	pLayer->SetScrollRange(0, 800);
 
 	m_pPhotoShowLayer = (CPhotoShowLayer*)GetChildByName(L"photo_show");
 	ASSERT(m_pPhotoShowLayer);

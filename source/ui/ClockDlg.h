@@ -72,6 +72,7 @@ public:
 	virtual void OnDraw(CWceUiGenericBitmap* pWndBitmap, RECT rcNeedDraw);
 protected:
 	void DrawClock(CWceUiGenericBitmap* pWndBitmap);
+	virtual void GetCoordinate(CRect rc[6]);
 
 	CWceUiLoadBitmap m_txtNumber[10];
 	CWceUiLoadBitmap m_txtColon;
@@ -80,3 +81,14 @@ protected:
 	BOOL m_bShowColcon;
 };
 WCEUI_DYNCREATE_END(CDigitalClockLayer, CWceUiLayer);
+
+
+class CDigitalClockLayer_Main : public CDigitalClockLayer
+{
+	WCEUI_DYNCREATE_BEGIN(CDigitalClockLayer_Main, CDigitalClockLayer)
+
+protected:
+	virtual void GetCoordinate(CRect rc[6]);
+
+};
+WCEUI_DYNCREATE_END(CDigitalClockLayer_Main, CDigitalClockLayer);

@@ -10,7 +10,6 @@
 #include "bzs_music.h"
 #include "bzi_music.h"
 #include "BZI_PBMgr.h"
-#include "BZI_SPP.h"
 
 #define PBMGR_SYNC_TIMEOUT	(2 * 60 * 1000)
 #define PBMGR_SYNC_STEP		10
@@ -132,10 +131,6 @@ public:
 
 	// 打开或关闭语音识别(Siri)
 	void SetVoiceRecognition(BOOL bEnable);
-
-	// SPP
-	BOOL SPPConnect();
-	BOOL SPPDisconnect();
 protected:
 	// event handler
 	void OnBTPair(DWORD dwIndID, WPARAM wParam, LPARAM lParam);

@@ -184,21 +184,6 @@ void CMainDlg::RelayoutLayers()
 	   player->GetCommonStyle()->SetPosition(rc, WCEUI_ABSOLUTE_POSITION);
 	   player->GetCommonStyle()->SetUsePosition(TRUE);
    }
-
-
-   // 这套UI，AVIN，AUX放在下面一排了frame_bottom,所以这里也处理下功能配置项,主要是avin1，avin2
-	CWceUiLayer *pavin1 = GetLayerByName(L"avin1");
-	CWceUiLayer *pavin2 = GetLayerByName(L"avin2");
-   if (pavin1!=NULL) 
-   {
-	   pavin1->ShowLayer(config::get_config_functions()->is_support(pavin1->GetName()) ? TRUE : FALSE);
-   }
-
-   if (pavin2!=NULL) 
-   {
-	   pavin2->ShowLayer(config::get_config_functions()->is_support(pavin2->GetName()) ? TRUE : FALSE);
-   }
-
 }
 
 #include "QTelzone.h"

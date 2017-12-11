@@ -233,21 +233,9 @@ BOOL CDlgManager::IsTopMostDlg(DLG_INFO* pdi)
 
 void CDlgManager::GotoLastDlg()
 {
-	// 当lastdlg的源不存在时,不允许显示对应的窗口
-	if (m_last_dlginfo != NULL )
+	if (m_last_dlginfo != NULL)
 	{
-		if( m_last_dlginfo->source_id < SOURCE_MAX_ID	// 是个真正的源, 不是SOURCE_MAIN或SOURCE_SETTING这些
-			&& sysutil::nss_get_instance()->is_source_available(m_last_dlginfo->source_id))
-		{
-			if(m_last_dlginfo->dlg_id != PhoneLink_ID || CPhoneLink::GetInstance()->IsConnected())
-			{
-				ShowDlg(m_last_dlginfo->dlg_id, m_last_dlginfo->source_id);
-			}
-		}
-		else if (m_last_dlginfo->source_id > SOURCE_MAX_ID)
-		{
-			ShowDlg(m_last_dlginfo->dlg_id, m_last_dlginfo->source_id);
-		}
+		ShowDlg(m_last_dlginfo->dlg_id, m_last_dlginfo->source_id);
 	}
 }
 

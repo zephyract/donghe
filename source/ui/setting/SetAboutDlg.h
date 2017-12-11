@@ -32,8 +32,7 @@ protected:
 
 	void InitSysInfo();
 	int  GetFlashSize();
-public:
-	static BOOL iGOGetDeviceCode(TCHAR *deviceID);
+	BOOL iGOGetDeviceCode(TCHAR *deviceID);
 	// buffer长度大于17
 	void GetDVDVersion(OUT TCHAR *pDVDVersion);
 

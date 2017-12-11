@@ -58,14 +58,7 @@ void CCDFileListDlg::InitListbox()
 		{
 			if (track.GetAt(i) > 0)
 			{
-				if (WceUiGetScreenWidth() == 1024)
-				{
-					str.Format(L"Track%d                                                                               %02d:%02d", i+1, track.GetAt(i)/60, track.GetAt(i)%60);
-				}
-				else
-				{
-					str.Format(L"Track%d                                                 %02d:%02d", i+1, track.GetAt(i)/60, track.GetAt(i)%60);
-				}
+				str.Format(L"Track%d                                                 %02d:%02d", i+1, track.GetAt(i)/60, track.GetAt(i)%60);
 			}
 			else
 			{

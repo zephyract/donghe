@@ -34,9 +34,9 @@ static void _nss_init_by_config()
 	// 使用配置文件中指定的缺省时区
 	pnss->ui_timezone_id = config::get_timezone_default();
 
-	// 缺省情况时间自动设置，使用12小时制
+	// 缺省情况时间自动设置，使用24小时制
 	pnss->ui_time_autoset = TRUE;
-	pnss->ui_24hourtime   = config::get_config_misc()->hourtime24;
+	pnss->ui_24hourtime   = TRUE;
 	pnss->ui_time_dst   = FALSE;
 
 	pnss->ui_clock_mode = 0;
@@ -53,7 +53,6 @@ static void _nss_init_by_config()
 	pnss->audio_media_rear_volume = config::get_config_audio()->meida_rear_volume;
 	pnss->audio_init_media_max_volume = config::get_config_audio()->init_max_volume;
 	pnss->audio_bt_volume = config::get_config_audio()->bt_volume;
-	pnss->audio_ta_volume = config::get_config_audio()->ta_volume;
 	pnss->audio_gps_volume = config::get_config_audio()->gps_volume;
 	pnss->audio_gps_gain = config::get_config_audio()->gps_gain;
 	pnss->audio_is_gps_gain_off = config::get_config_audio()->gps_gain_off;
@@ -62,6 +61,10 @@ static void _nss_init_by_config()
 	pnss->audio_eq_subwoofer = config::get_config_audio()->subwoofer;
 	pnss->audio_eq_loudness = 10;
 	pnss->audio_eq_loudness_gain = 0;	// 默认情况loud为关
+	pnss->audio_eq_subwoofer_enable = FALSE;
+	pnss->audio_eq_balance_lr = 0;
+	pnss->audio_eq_balance_fr = 0;
+
 
 	// video
 	pnss->video_mode = 0;
@@ -366,14 +369,7 @@ BOOL sysutil::nss_load_bkground(int index)
 // 	}
 
 	//////////////////////////////
-	if (WceUiGetScreenWidth() == 1024)
-	{
-		_stprintf(szFilepath, L"%s\\BKSkin_1024X600.pack\\Skin%d.bmp", tzutil::GetAppPath(), index);
-	}
-	else
-	{
-		_stprintf(szFilepath, L"%s\\BKSkin.pack\\Skin%d.bmp", tzutil::GetAppPath(), index);
-	}
+	_stprintf(szFilepath, L"%s\\BKSkin.pack\\Skin%d.bmp", tzutil::GetAppPath(), index);
 	if (WceUiGetBitsPixel() == 16)
 	{
 		((CWceUi565Bitmap*)nss_get_instance()->pui_bk_texture)->LoadFromFile(szFilepath);

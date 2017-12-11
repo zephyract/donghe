@@ -866,7 +866,7 @@ void CSourceManager::OpenAudio()
 	{
 		CBluetooth::GetInstance()->LaunchSrc();
 	}
-	else if (sid == SOURCE_PHONE_LINK || sid == SOURCE_EASY_CONNECTED)
+	else if (sid == SOURCE_PHONE_LINK || SOURCE_EASY_CONNECTED)
 	{
 		CBluetooth::GetInstance()->LaunchSrc();
 	}

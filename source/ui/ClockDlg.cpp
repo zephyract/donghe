@@ -380,6 +380,22 @@ void CDigitalClockLayer::OnDraw(CWceUiGenericBitmap* pWndBitmap, RECT rcNeedDraw
 	DrawClock(pWndBitmap);
 }
 
+void CDigitalClockLayer::GetCoordinate(CRect rcLoc[6])
+{
+	CRect rc;
+	GetWindowRect(rc);
+	int offset_x[6] = {0, 27, 54, 67, 94, 126}; // hr, hr, colon, min, min, am/pm
+	int offset_y = 0;
+	int width[6] = {26, 26, 12, 26, 26, 26};
+	int height = 43;
+	
+	for (int i=0; i<6; i++)
+	{
+		rcLoc[i].SetRect(offset_x[i], offset_y, offset_x[i]+width[i], offset_y+height);
+		rcLoc[i].OffsetRect(rc.left, rc.top);
+	}
+}
+
 void CDigitalClockLayer::DrawClock(CWceUiGenericBitmap* pWndBitmap)
 {
 	SYSTEMTIME tm;
@@ -395,18 +411,8 @@ void CDigitalClockLayer::DrawClock(CWceUiGenericBitmap* pWndBitmap)
 		}
 	}
 
-	CRect rc;
-	GetWindowRect(rc);
-	int offset_x[6] = {0, 27, 54, 67, 94, 126}; // hr, hr, colon, min, min, am/pm
-	int offset_y = 0;
-	int width[6] = {26, 26, 12, 26, 26, 26};
-	int height = 43;
 	CRect rcLoc[6];
-	for (int i=0; i<6; i++)
-	{
-		rcLoc[i].SetRect(offset_x[i], offset_y, offset_x[i]+width[i], offset_y+height);
-		rcLoc[i].OffsetRect(rc.left, rc.top);
-	}
+	GetCoordinate(rcLoc);
 
 	BLENDFUNCTION bf;
 	memset(&bf, 0, sizeof(BLENDFUNCTION));
@@ -439,4 +445,27 @@ void CDigitalClockLayer::DrawClock(CWceUiGenericBitmap* pWndBitmap)
 		pWndBitmap->AlphaBlend(rcLoc[5].left, rcLoc[5].top, rcLoc[5].Width(), rcLoc[5].Height(),
 			(tm.wHour < 12) ? m_txtAM.GetBitmap() : m_txtPM.GetBitmap(), 0, 0, bf);
  	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+
+void CDigitalClockLayer_Main::GetCoordinate(CRect rcLoc[6])
+{
+	CRect rc;
+	GetWindowRect(rc);
+	int offset_x[6] = {0, 41, 82, 123, 164, 76}; // hr, hr, colon, min, min, am/pm
+	int offset_y = 0;
+	int width[6] = {41, 41, 41, 41, 41, 50};
+	int height = 56;
+
+	for (int i=0; i<6; i++)
+	{
+		if (i == 5)
+		{
+			offset_y = 81;
+		}
+		rcLoc[i].SetRect(offset_x[i], offset_y, offset_x[i]+width[i], offset_y+height);
+		rcLoc[i].OffsetRect(rc.left, rc.top);
+	}
 }

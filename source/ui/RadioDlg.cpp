@@ -5,7 +5,6 @@
 #include "wceuibase.h"
 #include "tzUtil.h"
 #include "SourceManager.h"
-#include "config.h"
 // 单位0.01MHz (对应屏幕控件的范围是0~800)
 const int FM_RULER_RANGE_MIN = 8750;
 const int FM_RULER_RANGE_MAX = 11200;
@@ -54,7 +53,28 @@ void CRadioDlg::InitLayers()
 	if (playerPStip)	{	playerPStip->SetText(L"PS");	}
 	ShowPSTip(FALSE);
 
+	for (int i=0; i<6; i++)
+	{
+		TCHAR layer_name[16];
+		_stprintf(layer_name, L"value%d", i+1);
+		m_pLayerValue[i] = (CWceUiButton*)GetLayerByName(layer_name);
+		if (m_pLayerValue[i])
+		{
+			m_pLayerValue[i]->EnableLongPress(TRUE);
+		}
+	}
 
+	LPCTSTR name[] = {L"auto_scan", L"preview_scan", L"seek_dec", L"seek_inc", L"band", 
+		L"tune_dec",L"tune_inc",L"sens", L"stereo", L"value1", L"value2", L"value3",
+		L"value4", L"value5", L"value6", L"AF_status",	L"TA_status"};
+	for (int i=0; i<sizeof(name)/sizeof(name[0]); i++)
+	{
+		CWceUiButton* pbutton = (CWceUiButton*)GetChildByName(name[i]);
+		if (pbutton)
+		{
+			pbutton->SetUserData(1);	// APP不响BEEP
+		}
+	}
 	OnRadioRegionChange();
 
 }
@@ -100,9 +120,27 @@ void CRadioDlg::OnBnLongClick(CWceUiButton* pButton)
 
 }
 
+int CRadioDlg::GetValueButtonIndex(CWceUiButton *pbutton)
+{
+	if (pbutton)
+	{
+		for (int i=0; i<6; i++)
+		{
+			TCHAR layer_name[16];
+			_stprintf(layer_name, L"value%d", i+1);
+			if (pbutton->IsEqualName(layer_name))
+			{
+				return i+1;
+			}
+		}
+	}
+
+	return 0;
+}
 
 void CRadioDlg::OnBnClick(CWceUiButton* pButton)
 {
+	int index;
 	if (pButton->IsEqualName(L"auto_scan"))
 	{
 		CRpcMCU::GetInstance()->RPC_KeyCommand(T_RADIO_AS, 0);	// 1可预览不存台
@@ -126,6 +164,10 @@ void CRadioDlg::OnBnClick(CWceUiButton* pButton)
 	else if (pButton->IsEqualName(L"mute"))
 	{
 		//CRpcMCU::GetInstance()->RPC_KeyCommand(T_RADIO_AS, 0);	// 1可预览不存台
+	}
+	else if (index=GetValueButtonIndex(pButton))
+	{
+		CRpcMCU::GetInstance()->RPC_KeyCommand(T_RADIO_PRESET_LOAD, index<<24);
 	}
 	else if (pButton->IsEqualName(L"rds"))
 	{
@@ -210,7 +252,10 @@ void CRadioDlg::OnRadioPresetInfo(BOOL bForceRefresh)
 
 	// 更新当前频点与频点单位
 	MCU_RADIO_PRESET_INFO* pinfo = protocol::get_mcu_radio_presetinfo();
-	TCHAR freq[16];
+ 	TCHAR freq[16];
+	// ruler位置变化时会更新频点信息,这里不用更新
+// 	_format_freq_value(freq, pinfo->cur_freq, pinfo->band);
+// 	m_pLayerCurFreq->SetText(freq);
 
 	// preset list 有变化时才更新
 	if (bForceRefresh || memcmp(preset_list, pinfo->preset_list, sizeof(preset_list)) != 0)
@@ -233,12 +278,6 @@ void CRadioDlg::OnRadioPresetInfo(BOOL bForceRefresh)
 		band = pinfo->band;
 
 		ShowStereo(band>=0 && band<=2);	// FM1, FM2, FM3时才显示
-		// FM才有RDS
-		CWceUiLayer* pRDS = GetChildByName(L"rds");
-		if (pRDS)
-		{
-			pRDS->EnableLayer(band>=0 && band<=2);
-		}
 	}
 
 	// 预设台号有变化时才更新
@@ -250,6 +289,54 @@ void CRadioDlg::OnRadioPresetInfo(BOOL bForceRefresh)
 	}
 
 	__super::OnRadioPresetInfo(bForceRefresh);
+}
+
+void CRadioDlg::ShowStereo(BOOL bShow)
+{
+	CWceUiButton *pLayerST = (CWceUiButton*)GetChildByName(L"stereo");
+	if (pLayerST)
+	{
+		pLayerST->ShowLayer(bShow);
+	}
+
+}
+
+void CRadioDlg::OnCurPresetChange(int nOld, int nCur)
+{
+	TCHAR style[16];
+	if (nOld>0 && nOld<=6)
+	{
+		_stprintf(style, L"value%d_normal", nOld);
+		m_pLayerValue[nOld-1]->SetStatusStyleName(style, CWceUiButton::STATUS_NORMAL);
+		_stprintf(style, L"value%d_down", nOld);
+		m_pLayerValue[nOld-1]->SetStatusStyleName(style, CWceUiButton::STATUS_DOWN);
+	}
+
+	if (nCur>0 && nCur<=6)
+	{
+		_stprintf(style, L"value%d_check", nCur);
+		m_pLayerValue[nCur-1]->SetStatusStyleName(style, CWceUiButton::STATUS_NORMAL);
+		m_pLayerValue[nCur-1]->SetStatusStyleName(style, CWceUiButton::STATUS_DOWN);
+	}
+}
+
+#include "SetRadioAreaDlg.h"
+void CRadioDlg::ShowBand(int nBand)
+{
+	// cur_band5, cur_band6 for Europe
+	LPCTSTR style_str[] = {L"cur_band0", L"cur_band1", L"cur_band2", L"cur_band3", L"cur_band4", L"cur_band5", L"cur_band6" };
+	CWceUiLayer* pLayerBand = GetLayerByName(L"cur_band");
+	if (pLayerBand && nBand>=0 && nBand <5)
+	{
+		// 如果是欧洲地区,AM1,AM2显示为MW1,MW2
+		if ( protocol::get_mcu_sys_para()->get_fm_cur_region() == FQ_EUROPE
+			&& (nBand == 3 || nBand == 4))
+		{
+			nBand += 2;
+		}
+
+		pLayerBand->SetStyle(style_str[nBand]);
+	}
 }
 
 void CRadioDlg::OnPSBegin()
@@ -356,9 +443,8 @@ void CRadioDlg::OnRadioRegionChange()
 		pRDS->GetStyle()->GetPosition(rc);
 		offset = rc.Width();
 
-		if (config::get_config_misc()->rds	// 配置文件支持RDS
-			&& (protocol::get_mcu_sys_para()->get_fm_cur_region() == FQ_EUROPE
-				|| protocol::get_mcu_sys_para()->get_fm_cur_region() == FQ_SAMER1))	// 北美
+		if (/*protocol::get_mcu_sys_para()->get_fm_cur_region() == FQ_EUROPE*/0
+			/*|| protocol::get_mcu_sys_para()->get_fm_cur_region() == FQ_SAMER1*/)	// 北美
 		{
 			if (!pRDS->GetStyle()->IsVisible())
 			{
@@ -883,35 +969,11 @@ void CRadioBaseDlg::InitLayers()
 	{
 		pButton->EnableMultiCmd(TRUE);
 	}
-
-	for (int i=0; i<6; i++)
-	{
-		TCHAR layer_name[16];
-		_stprintf(layer_name, L"value%d", i+1);
-		m_pLayerValue[i] = (CWceUiButton*)GetLayerByName(layer_name);
-		if (m_pLayerValue[i])
-		{
-			m_pLayerValue[i]->EnableLongPress(TRUE);
-		}
-	}
-
-	LPCTSTR name[] = {L"auto_scan", L"preview_scan", L"seek_dec", L"seek_inc", L"band", 
-		L"tune_dec",L"tune_inc",L"sens", L"stereo", L"value1", L"value2", L"value3",
-		L"value4", L"value5", L"value6", L"AF_status",	L"TA_status"};
-	for (int i=0; i<sizeof(name)/sizeof(name[0]); i++)
-	{
-		CWceUiButton* pbutton = (CWceUiButton*)GetChildByName(name[i]);
-		if (pbutton)
-		{
-			pbutton->SetUserData(1);	// APP不响BEEP
-		}
-	}
 }
 
 
 void CRadioBaseDlg::OnBnClick(CWceUiButton* pButton)
 {
-	int index;
 	if (pButton->IsEqualName(L"AF_status"))
 	{
 		CRpcMCU::GetInstance()->RPC_KeyCommand(T_RADIO_AF, 0);	// 1可预览不存台
@@ -935,10 +997,6 @@ void CRadioBaseDlg::OnBnClick(CWceUiButton* pButton)
 	else if (pButton->IsEqualName(L"tune_inc"))
 	{
 		CRpcMCU::GetInstance()->RPC_KeyCommand(T_RADIO_TUNE_UP, 0);
-	}
-	else if (index=GetValueButtonIndex(pButton))
-	{
-		CRpcMCU::GetInstance()->RPC_KeyCommand(T_RADIO_PRESET_LOAD, index<<24);
 	}
 	else
 	{
@@ -1102,71 +1160,4 @@ void CRadioBaseDlg::RulerPosChange(CWceUiScrollLayer* pLayer, BOOL bUpdateMCU)
 		RefreshRuler(freq, minFreq, maxFreq);	
 		CRpcMCU::GetInstance()->RPC_KeyCommand(T_RADIO_FM_FREQ, freq);
 	}
-}
-
-
-void CRadioBaseDlg::ShowStereo(BOOL bShow)
-{
-	CWceUiButton *pLayerST = (CWceUiButton*)GetChildByName(L"stereo");
-	if (pLayerST)
-	{
-		pLayerST->ShowLayer(bShow);
-	}
-
-}
-
-void CRadioBaseDlg::OnCurPresetChange(int nOld, int nCur)
-{
-	TCHAR style[16];
-	if (nOld>0 && nOld<=6)
-	{
-		_stprintf(style, L"value%d_normal", nOld);
-		m_pLayerValue[nOld-1]->SetStatusStyleName(style, CWceUiButton::STATUS_NORMAL);
-		_stprintf(style, L"value%d_down", nOld);
-		m_pLayerValue[nOld-1]->SetStatusStyleName(style, CWceUiButton::STATUS_DOWN);
-	}
-
-	if (nCur>0 && nCur<=6)
-	{
-		_stprintf(style, L"value%d_check", nCur);
-		m_pLayerValue[nCur-1]->SetStatusStyleName(style, CWceUiButton::STATUS_NORMAL);
-		m_pLayerValue[nCur-1]->SetStatusStyleName(style, CWceUiButton::STATUS_DOWN);
-	}
-}
-
-#include "SetRadioAreaDlg.h"
-void CRadioBaseDlg::ShowBand(int nBand)
-{
-	// cur_band5, cur_band6 for Europe
-	LPCTSTR style_str[] = {L"cur_band0", L"cur_band1", L"cur_band2", L"cur_band3", L"cur_band4", L"cur_band5", L"cur_band6" };
-	CWceUiLayer* pLayerBand = GetLayerByName(L"cur_band");
-	if (pLayerBand && nBand>=0 && nBand <5)
-	{
-		// 如果是欧洲地区,AM1,AM2显示为MW1,MW2
-		if ( protocol::get_mcu_sys_para()->get_fm_cur_region() == FQ_EUROPE
-			&& (nBand == 3 || nBand == 4))
-		{
-			nBand += 2;
-		}
-
-		pLayerBand->SetStyle(style_str[nBand]);
-	}
-}
-
-int CRadioBaseDlg::GetValueButtonIndex(CWceUiButton *pbutton)
-{
-	if (pbutton)
-	{
-		for (int i=0; i<6; i++)
-		{
-			TCHAR layer_name[16];
-			_stprintf(layer_name, L"value%d", i+1);
-			if (pbutton->IsEqualName(layer_name))
-			{
-				return i+1;
-			}
-		}
-	}
-
-	return 0;
 }

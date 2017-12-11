@@ -11,11 +11,9 @@ public:
 	~CSettingDlg(void);	
 
 	virtual void OnInitDialog();
-	virtual void OnDlgShow(BOOL bShow);
+	
 protected:
 	virtual void OnBnClick(CWceUiButton* pButton);
-	void OnSliderChange(CWceUiSlider* pslider, UINT status, UINT pos);
-	void InitRDSVolume();
 
 };
 WCEUI_DYNCREATE_END(CSettingDlg, CSetBaseDlg);

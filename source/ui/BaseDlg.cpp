@@ -40,7 +40,6 @@ DLG_INFO g_dlg_info[] =
 
 	{CRadioDlg_ID,		L"CRadioDlg",					1,	SOURCE_FM,		FALSE, FALSE, FALSE, NULL, FALSE},
 	{CRadioRDSDlg_ID,	L"CRadioRDSDlg",				1,	SOURCE_FM,		FALSE, FALSE, FALSE, NULL, FALSE},
-	{CRadioPtyDlg_ID,	L"CRadioPtyDlg",				2,	SOURCE_FM,		FALSE, FALSE, FALSE, NULL, FALSE},
 	{CBluetoothDlg_ID,	L"bt\\CBluetoothDlg",			1,	SOURCE_BT,		FALSE, FALSE, FALSE, NULL, TRUE},
 	{CBTCallDlg_ID,		L"bt\\CBTCallDlg",				1,	SOURCE_BT_CALL,		FALSE, FALSE, FALSE, NULL, TRUE},
 

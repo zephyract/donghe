@@ -50,10 +50,6 @@ void ui_set_timezone(int timezone_id)
 LPCTSTR ui_get_res_file()
 {
 	static TCHAR res_file[32] = L"800X480.pack";
-	if (WceUiGetScreenWidth() == 1024)
-	{
-		return L"1024X600.pack";
-	}
 
 	return res_file;
 }

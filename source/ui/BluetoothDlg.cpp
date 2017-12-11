@@ -752,17 +752,11 @@ void CBluetoothDlg::ShowPBQueryUI(BOOL bShow)
 	WCEUI_POSITION_WAY way = plistbox->GetStyle()->GetPosition(src);
 	if (bShow)
 	{
-		if (WceUiGetScreenWidth() == 1024 && WceUiGetScreenHeight() == 600)
-			src.SetRect(39, 88, 39+391, 88+395);
-		else
-			src.SetRect(39, 88, 39+322, 88+275);
+		src.SetRect(39, 88, 39+322, 88+275);
 	}
 	else
 	{
-		if (WceUiGetScreenWidth() == 1024 && WceUiGetScreenHeight() == 600)
-			src.SetRect(39, 88, 39+946, 88+395);
-		else
-			src.SetRect(39, 88, 39+722, 88+275);
+		src.SetRect(39, 88, 39+722, 88+275);
 	}
 	plistbox->GetStyle()->SetPosition(&src, way);
 }
@@ -899,14 +893,6 @@ BOOL CBluetoothDlg::OnBnMusicClick(CWceUiButton* pButton)
 
 			CBluetooth::GetInstance()->MusicPrev();
 		}
-
-// 		BOOL b = CBluetooth::GetInstance()->SPPConnect();
-// 		RETAILMSG(1, (L"[spp] sppconnect return %s", b ? L"TRUE" : L"FALSE"));
-// 		if (BZ_SPPGetConnectStatus())
-// 		{
-// 			CDEPSerial dep;
-// 			dep.Open(L"COM8:");
-// 		}
 	}
 	else if (pButton->IsEqualName(L"music_play"))	//
 	{
@@ -1105,8 +1091,8 @@ static void _AddSpace2Str(CString& str, int len, HFONT hfont)
 // bShort来标识生成长串还是短串,当搜索界面时，列表框变窄了
 static void _FormatPBListboxString(CString &str, HFONT hfont, int nIndex, LPCTSTR name, LPCTSTR number, BOOL bShort)
 {
-	int space1 = WceUiGetScreenWidth() == 1024 ? 25 : 20;
-	int space2 = WceUiGetScreenWidth() == 1024 ? 80 : 55;
+	int space1 = 20;
+	int space2 = 55;
 	str.Format(L"       %d", nIndex);
 	if (bShort)
 	{

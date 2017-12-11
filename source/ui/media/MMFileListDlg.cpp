@@ -1073,21 +1073,13 @@ void CMMFileListDlg::ShowQueryUI(BOOL bShow)
 	WCEUI_POSITION_WAY way = plistbox->GetStyle()->GetPosition(src);
 	if (bShow)
 	{
-		if (WceUiGetScreenWidth() == 1024 && WceUiGetScreenHeight() == 600)
-			src.SetRect(39, 88, 39+391, 88+395);
-		else
-			src.SetRect(39, 88, 39+322, 88+275);
-
+		src.SetRect(39, 88, 39+322, 88+275);
 		plistbox->SetTextLeftOffset(5);
 		plistbox->SetDrawItemImage(FALSE);
 	}
 	else
 	{
-		if (WceUiGetScreenWidth() == 1024 && WceUiGetScreenHeight() == 600)
-			src.SetRect(39, 88, 39+946, 88+395);
-		else
-			src.SetRect(39, 88, 39+722, 88+275);
-
+		src.SetRect(39, 88, 39+722, 88+275);
 		plistbox->SetTextLeftOffset(20);
 		plistbox->SetDrawItemImage(TRUE);
 	}

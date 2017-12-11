@@ -6,9 +6,8 @@
 #include "tzUtil.h"
 #include "sysUtil.h"
 #include "SetRadioAreaDlg.h"
-#include "SourceManager.h"
 
-TCHAR* RDS_PROGRAM_TYPE[] = 
+static TCHAR* RDS_PROGRAM_TYPE[] = 
 {
 	_T("NONE"),
 
@@ -52,7 +51,7 @@ TCHAR* RDS_PROGRAM_TYPE[] =
 
 };
 
-TCHAR* RBDS_PROGRAM_TYPE[] = 
+static TCHAR* RBDS_PROGRAM_TYPE[] = 
 {
 	_T("NONE"),
 
@@ -114,7 +113,7 @@ void CRadioRDSDlg::OnInitDialog()
 	__super::OnInitDialog();
 
 	OnRadioStatus();
-//	OnRadioPresetInfo();
+	OnRadioPresetInfo();
 }
 
 void CRadioRDSDlg::InitLayers()
@@ -150,12 +149,7 @@ void CRadioRDSDlg::OnDraw(CWceUiGenericBitmap* pWndBitmap, RECT rcNeedDraw)
 	CAnimDlg::OnDraw(pWndBitmap, rcNeedDraw);
 }
 
-int CRadioRDSDlg::GetPTYCount()
-{
-	return sizeof(RDS_PROGRAM_TYPE)/sizeof(RDS_PROGRAM_TYPE[0]);
-}
-
- LPCTSTR CRadioRDSDlg::GetPTYString(int type)
+LPCTSTR CRadioRDSDlg::GetPTYString(int type)
 {
 	if (type>=0 && type<sizeof(RDS_PROGRAM_TYPE)/sizeof(RDS_PROGRAM_TYPE[0]))
 	{
@@ -205,10 +199,6 @@ void CRadioRDSDlg::OnKeyPlayControl(UINT key, UINT param)
 
 void CRadioRDSDlg::OnPTYClick()
 {
-	CDlgManager::GetInstance()->ShowDlg(CRadioPtyDlg_ID, SOURCE_FM);
-	return;
-
-
 	sysutil::nss_get_instance()->ui_rds_pty++;
 	sysutil::nss_get_instance()->ui_rds_pty = 
 		sysutil::nss_get_instance()->ui_rds_pty % (sizeof(RDS_PROGRAM_TYPE)/sizeof(RDS_PROGRAM_TYPE[0]));
@@ -218,9 +208,9 @@ void CRadioRDSDlg::OnPTYClick()
 
 void CRadioRDSDlg::OnBnClick(CWceUiButton* pButton)
 {
-	if (pButton->IsEqualName(L"band"))
+	if (pButton->IsEqualName(L"REG"))
 	{
-		CRpcMCU::GetInstance()->RPC_KeyCommand(T_RADIO_BAND, 0);
+		CRpcMCU::GetInstance()->RPC_KeyCommand(T_RADIO_REG, 0);
 	}
 	else if (pButton->IsEqualName(L"REG_status"))
 	{
@@ -307,7 +297,7 @@ void CRadioRDSDlg::OnRDSAlarm(BOOL bAlarmOn)
 
 BOOL _is_AM_band(BYTE band);
 void _format_freq_value(LPTSTR buffer, WORD freq, BYTE band);
-void CRadioRDSDlg::OnRadioPresetInfo(BOOL bForceRefresh)
+void CRadioRDSDlg::OnRadioPresetInfo()
 {
 	// 更新当前频点与频点单位
 // 	MCU_RADIO_PRESET_INFO* pinfo = protocol::get_mcu_radio_presetinfo();
@@ -316,67 +306,7 @@ void CRadioRDSDlg::OnRadioPresetInfo(BOOL bForceRefresh)
 // 	m_pLayerCurFreq->SetText(freq);
 // 	m_pLayerFreqUnit->SetTextResID(_is_AM_band(pinfo->band) ? L"RADIO_FREQ_AM_UNIT" : L"RADIO_FREQ_FM_UNIT");
 
-	static WORD preset_list[6];
-	static BYTE band = 0xFF;
-	static BYTE preset_index = 0;	// 当前选中的预设台号
-
-	// 更新当前频点与频点单位
-	MCU_RADIO_PRESET_INFO* pinfo = protocol::get_mcu_radio_presetinfo();
-	TCHAR freq[16];
-
-	// preset list 有变化时才更新
-	if (bForceRefresh || memcmp(preset_list, pinfo->preset_list, sizeof(preset_list)) != 0)
-	{
-		for (int i=0; i<6; i++)
-		{
-			if (m_pLayerValue[i])
-			{
-				_format_freq_value(freq, pinfo->preset_list[i], pinfo->band);
-				m_pLayerValue[i]->SetText(freq);
-			}
-		}
-		memcpy(preset_list, pinfo->preset_list, sizeof(preset_list));
-	}
-
-	// band 有变化时才更新
-	if (bForceRefresh || band != pinfo->band)
-	{
-		ShowBand(pinfo->band);
-		band = pinfo->band;
-
-		ShowStereo(band>=0 && band<=2);	// FM1, FM2, FM3时才显示
-		// FM才有RDS, 不是FM波段的话，主动退出RDS界面
-		if (band > 2)
-		{
-			if (CSourceManager::GetInstance()->GetFrontSrcID() == SOURCE_FM)
-			{
-				if (CDlgManager::GetInstance()->GetCurDlgID() == CRadioRDSDlg_ID)
-				{
-					CDlgManager::GetInstance()->ShowDlg(CRadioDlg_ID, SOURCE_FM);
-				}
-				else
-				{
-					DLG_INFO *pdi = CDlgManager::GetInstance()->GetActiveDlgInfo(SOURCE_FM);
-					if (pdi && pdi->dlg_id == CRadioRDSDlg_ID)
-					{
-						CDlgManager::GetInstance()->SetActiveDlg(CRadioDlg_ID, SOURCE_FM);
-					}
-				}
-			}
-		}
-	}
-
-	// 预设台号有变化时才更新
-	if (bForceRefresh || preset_index != pinfo->preset_index)
-	{
-		RETAILMSG(1, (L"prset list ----------------- old=%d,  new=%d\n", preset_index, pinfo->preset_index));
-		OnCurPresetChange(preset_index, pinfo->preset_index);
-		preset_index = pinfo->preset_index;
-	}
-
-
-
-	__super::OnRadioPresetInfo(bForceRefresh);
+	__super::OnRadioPresetInfo();
 }
 
 void CRadioRDSDlg::ShowPSPTYInfo()
@@ -406,6 +336,15 @@ void CRadioRDSDlg::ShowPSPTYInfo()
 	}
 }
 
+void CRadioRDSDlg::ShowStereo(BOOL bShow)
+{
+	CWceUiButton *pLayerST = (CWceUiButton*)GetChildByName(L"stereo");
+	if (pLayerST)
+	{
+		pLayerST->ShowLayer(bShow);
+	}
+
+}
 
 BOOL CRadioRDSDlg::IsTopMostDlg()
 {
@@ -446,7 +385,5 @@ void CRadioRDSDlg::OnDlgShow(BOOL bShow)
 			player->SetTextResID(L"RADIO_RDS");
 		}
 	}
-
-	ShowPTYUser(sysutil::nss_get_instance()->ui_rds_pty);
 
 }

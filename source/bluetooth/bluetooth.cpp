@@ -1185,16 +1185,3 @@ int CBluetooth::GetLocalCallInfoIndex(int nIndex, E_BT_PBAP_SYNC_PATH_T ePath)
 
 	return -1;
 }
-
-
-BOOL CBluetooth::SPPConnect()
-{
-	HRESULT ret = BZ_SPPCreateConnect();
-	return ret == BZE_OK;
-}
-
-BOOL CBluetooth::SPPDisconnect()
-{
-	HRESULT ret = BZ_SPPRemoveConnect();
-	return ret == BZE_OK;
-}
