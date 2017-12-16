@@ -184,7 +184,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="\residentflash2\app"
+				RemoteDirectory="\residentflash2\app2"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>

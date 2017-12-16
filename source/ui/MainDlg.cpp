@@ -426,8 +426,10 @@ void CMainDlg::ShowBottom(BOOL bShow)
 	m_bBottomShow = bShow;
 	if (pShow && pHide)
 	{
-		pShow->ShowLayer(!bShow);
-		pHide->ShowLayer(bShow);
+// 		pShow->ShowLayer(!bShow);
+// 		pHide->ShowLayer(bShow);
+		pShow->ShowLayer(FALSE);
+		pHide->ShowLayer(FALSE);
 	}
 }
 
