@@ -83,6 +83,7 @@ static void _nss_init_by_config()
 
 	pnss->video_backlight_normal = config::get_config_video()->backlight_normal;
 	pnss->video_backlight_night = config::get_config_video()->backlight_night;
+	pnss->video_backlight_mode = UIBS_NORMAL;
 
 	pnss->video_rear_camera_mirror = config::get_config_video()->camera_mirror;
 	pnss->video_parking = config::get_config_video()->parking;
@@ -156,6 +157,7 @@ void sysutil::nss_init()
 		// backlight值保证不要出错,以免黑屏
 		nss_get_instance()->video_backlight_normal = max(10, nss_get_instance()->video_backlight_normal);
 		nss_get_instance()->video_backlight_night = max(10, nss_get_instance()->video_backlight_night);
+		nss_get_instance()->video_backlight_mode = (nss_get_instance()->video_backlight_mode == UIBS_OFF) ? UIBS_NORMAL : nss_get_instance()->video_backlight_mode;
 
 		// vdisk
 		nss_get_instance()->vdisk_is_ripping = 0;

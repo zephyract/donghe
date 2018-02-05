@@ -149,7 +149,7 @@ void CMainDlg::RelayoutLayers()
 		pframe->SetScrollRange(0, (total_buttons_visible-1)/MAIN_BUTTONS_PER_PAGE*800);
 	}
 
-	for (int i=0; i<MAIN_MAX_BUTTONS/MAIN_BUTTONS_PER_PAGE; i++)
+	for (int i=0; i<4; i++)
 	{
 		TCHAR layer_name[16];
 		_stprintf(layer_name, L"page%d", i);
@@ -187,17 +187,17 @@ void CMainDlg::RelayoutLayers()
 
 
    // 这套UI，AVIN，AUX放在下面一排了frame_bottom,所以这里也处理下功能配置项,主要是avin1，avin2
-	CWceUiLayer *pavin1 = GetLayerByName(L"avin1");
-	CWceUiLayer *pavin2 = GetLayerByName(L"avin2");
-   if (pavin1!=NULL) 
-   {
-	   pavin1->ShowLayer(config::get_config_functions()->is_support(pavin1->GetName()) ? TRUE : FALSE);
-   }
-
-   if (pavin2!=NULL) 
-   {
-	   pavin2->ShowLayer(config::get_config_functions()->is_support(pavin2->GetName()) ? TRUE : FALSE);
-   }
+// 	CWceUiLayer *pavin1 = GetLayerByName(L"avin1");
+// 	CWceUiLayer *pavin2 = GetLayerByName(L"avin2");
+//    if (pavin1!=NULL) 
+//    {
+// 	   pavin1->ShowLayer(config::get_config_functions()->is_support(pavin1->GetName()) ? TRUE : FALSE);
+//    }
+// 
+//    if (pavin2!=NULL) 
+//    {
+// 	   pavin2->ShowLayer(config::get_config_functions()->is_support(pavin2->GetName()) ? TRUE : FALSE);
+//    }
 
 }
 
@@ -378,7 +378,7 @@ void CMainDlg::OnBnClick(CWceUiButton* pButton)
 	}
 	else if (pButton->IsEqualName(L"backlight"))
 	{
-		ui_close_backlight();
+		OnBacklightClick();
 	}
 	else if (pButton->IsEqualName(L"page0"))
 	{
@@ -418,6 +418,20 @@ void CMainDlg::OnBnClick(CWceUiButton* pButton)
 	}
 }
 
+void CMainDlg::OnBacklightClick()
+{
+	if(sysutil::nss_get_instance()->video_backlight_mode == UIBS_MID)
+	{
+		sysutil::nss_get_instance()->video_backlight_mode = UIBS_NORMAL;
+	} 
+	else if (sysutil::nss_get_instance()->video_backlight_mode == UIBS_NORMAL)
+	{
+		sysutil::nss_get_instance()->video_backlight_mode = UIBS_MID;
+		ui_close_backlight();
+	}
+	ui_update_backlight();
+}
+
 void CMainDlg::ShowBottom(BOOL bShow)
 {
 	CWceUiLayer* pShow = GetChildByName(L"show_bottom");
@@ -426,8 +440,8 @@ void CMainDlg::ShowBottom(BOOL bShow)
 	m_bBottomShow = bShow;
 	if (pShow && pHide)
 	{
-		pShow->ShowLayer(!bShow);
-		pHide->ShowLayer(bShow);
+		pShow->ShowLayer(/*!bShow*/FALSE);
+		pHide->ShowLayer(/*bShow*/FALSE);
 	}
 }
 
@@ -456,6 +470,17 @@ void CMainDlg::OnTimer(WORD wIDEvent)
 	__super::OnTimer(wIDEvent);
 }
 
+static LPCTSTR GetWeekDay()
+{
+	SYSTEMTIME sttm;
+	GetLocalTime( &sttm );
+	LPCTSTR resid[] = {L"WEEK_SUN", L"WEEK_MON", L"WEEK_TUE", L"WEEK_WED", L"WEEK_THU", L"WEEK_FRI", L"WEEK_SAT"};
+	static CWceUiLoadString loadString;
+	loadString.SetTextResID(resid[sttm.wDayOfWeek]);
+	return loadString.GetString();
+
+}
+
 void CMainDlg::UpdateDateTime()
 {
 	TCHAR szDate[32];
@@ -468,6 +493,13 @@ void CMainDlg::UpdateDateTime()
 	if (m_pTime)
 	{
 		m_pTime->SetText(szTime);
+	}
+
+	CWceUiLayer *ptopbar = GetChildByName(L"top_bar");
+	if (ptopbar)
+	{
+
+		ptopbar->SetText(GetWeekDay());
 	}
 }
 

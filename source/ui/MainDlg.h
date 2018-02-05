@@ -6,7 +6,7 @@
 
 // 主界面最多功能按钮数
 #define MAIN_MAX_BUTTONS	32
-#define MAIN_BUTTONS_PER_PAGE	8
+#define MAIN_BUTTONS_PER_PAGE	10
 
 #define TIMER_ID_REFRESH_TIME	1005
 
@@ -40,6 +40,7 @@ protected:
 	void OnPagePrevClick();
 	void OnPageNextClick();
 	void OnEcarClick();
+	void OnBacklightClick();
 
 	void InitButtonsRect();		// 保存按钮的原始坐标,配置后位置可能变了
 

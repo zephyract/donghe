@@ -270,6 +270,12 @@ enum UI_SYSTEM_STATUS
 	UISS_SLEEP_AWAKE,		// 假关机后唤醒状态(倒车或BT结束后重新进入SLEEP状态,没有其它条件进入其它状态)
 };
 
+enum UI_BACKLIGHT_STATUS
+{
+	UIBS_OFF,
+	UIBS_MID,
+	UIBS_NORMAL
+};
 
 typedef enum _DVP_SINK_
 {
@@ -374,6 +380,7 @@ struct NAVI_SYSTEM_STATUS
 
 	int video_backlight_normal;		// 白天背光10 ~ 100
 	int video_backlight_night;		// 黑夜模式背光10 ~ 100
+	int video_backlight_mode;		// 0, 1, 2 分别表示关屏,变暗(中间状态),正常状态
 
 	// SD信息
 	MSDK_MEMORY	sd_memory;

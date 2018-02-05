@@ -70,9 +70,16 @@ void ui_get_datetime_string(OUT LPTSTR pdate, OUT LPTSTR ptime)
 		{
 			wsprintf( pdate,L"%dÄê%dÔÂ%dÈÕ",sttm.wYear,sttm.wMonth,sttm.wDay );
 		}
+		else if (sysutil::nss_get_instance()->ui_lan_id == LAN_ENGLISH)
+		{
+			LPCTSTR month[] = {L"January", L"February", L"March", L"April", L"May", L"June", L"July", 
+				L"August", L"September", L"October", L"November", L"December"};
+
+			wsprintf( pdate,L"%02d %s %04d",sttm.wDay,month[sttm.wMonth-1],sttm.wYear);
+		}
 		else
 		{
-			wsprintf( pdate,L"%02d-%02d-%04d",sttm.wMonth,sttm.wDay,sttm.wYear);
+			wsprintf( pdate,L"%02d-%02d-%04d",sttm.wDay,sttm.wMonth,sttm.wYear);
 		}
 	}
 
@@ -518,11 +525,25 @@ void ui_update_backlight()
 {
 	if (protocol::get_mcu_status()->is_light_on() && sysutil::nss_get_instance()->sys_light_check)
 	{
-		YC_SetBackLightLevel(sysutil::nss_get_instance()->video_backlight_night);
+		if(sysutil::nss_get_instance()->video_backlight_mode == UIBS_MID)
+		{
+			YC_SetBackLightLevel(min(45, sysutil::nss_get_instance()->video_backlight_night));
+		}
+		else
+		{
+			YC_SetBackLightLevel(sysutil::nss_get_instance()->video_backlight_night);
+		}
 	}
 	else
 	{
-		YC_SetBackLightLevel(sysutil::nss_get_instance()->video_backlight_normal);
+		if(sysutil::nss_get_instance()->video_backlight_mode == UIBS_MID)
+		{
+			YC_SetBackLightLevel(min(55,sysutil::nss_get_instance()->video_backlight_normal));
+		}
+		else
+		{
+			YC_SetBackLightLevel(sysutil::nss_get_instance()->video_backlight_normal);
+		}
 	}
 }
 

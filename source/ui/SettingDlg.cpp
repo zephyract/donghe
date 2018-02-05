@@ -34,7 +34,7 @@ void CSettingDlg::OnInitDialog()
 	{
 		pLayer->SetScrollMode(SL_VERT);
 		pLayer->SetExtraScroll(30);
-		pLayer->SetScrollRange(0, WceUiGetScreenWidth()==1024 ? 600 : 457);
+		pLayer->SetScrollRange(0, WceUiGetScreenWidth()==1024 ? 600 : (457-168));
 	}
 
 	// calibrate
@@ -59,6 +59,9 @@ void CSettingDlg::OnDlgShow(BOOL bShow)
 
 void CSettingDlg::InitRDSVolume()
 {
+	return; // not support RDS volume this version
+
+
 	CWceUiLayer* pvolume = GetLayerByName(L"btn_rdsvolume");
 	if (pvolume == NULL)
 	{

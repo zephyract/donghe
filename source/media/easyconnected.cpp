@@ -94,7 +94,7 @@ BOOL CEasyConnected::HandleMessage(UINT message, WPARAM wParam, LPARAM lParam)
 	else if (message == UI_MSG_BT_CONNECT_STATUS_CHANGE && lParam == BZ_IND_CREATE_CONNECT_SUCCESS)
 	{
 		if (CSourceManager::GetInstance()->GetFrontSrcID() == SOURCE_EASY_CONNECTED
-			&& GetDeviceType() == 0)
+			&& (GetDeviceType() == 0 || GetDeviceType() == 1))
 		{
 			CMainWnd::GetInstance()->SetTimer(TIMER_ID_EASYCONNECTED_AD2P, 800, NULL);
 		}
@@ -124,7 +124,7 @@ void CEasyConnected::OnConnect(BOOL bConnect)
 		{
 			CDlgManager::GetInstance()->ShowDlg(EasyConnected_ID, SOURCE_EASY_CONNECTED);
 			if (CBluetooth::GetInstance()->IsConnected()
-				&& m_nDeviceType == 0)
+				&& (m_nDeviceType == 0 || m_nDeviceType == 1))
 			{
 				CBluetooth::GetInstance()->A2DPActive(TRUE);
 				CBluetooth::GetInstance()->MusicPlay();
@@ -157,7 +157,7 @@ void CEasyConnected::LaunchSrc()
 	LoadEasyConnected();
 
 	if (CBluetooth::GetInstance()->IsConnected()
-		&& m_nDeviceType == 0)
+		&& (m_nDeviceType == 0 || m_nDeviceType == 1))
 	{
 		CBluetooth::GetInstance()->A2DPActive(TRUE);
 		CBluetooth::GetInstance()->MusicPlay();
@@ -170,7 +170,7 @@ void CEasyConnected::StopSrc()
 	PostMessage2EasyConnected(UM_EASYCONNET_IN, INER_QUIT, 0);
 
 	if (CBluetooth::GetInstance()->IsConnected()
-		&& m_nDeviceType == 0)
+		/*&& (m_nDeviceType == 0 || m_nDeviceType == 1)*/)
 	{
 		CBluetooth::GetInstance()->MusicPause();
 		CBluetooth::GetInstance()->A2DPActive(FALSE);
@@ -241,7 +241,7 @@ void CEasyConnected::OnTimer(UINT_PTR nIDEvent)
 	{
 		CMainWnd::GetInstance()->KillTimer(TIMER_ID_EASYCONNECTED_AD2P);
 		if (CSourceManager::GetInstance()->GetFrontSrcID() == SOURCE_EASY_CONNECTED
-			&& GetDeviceType() == 0
+			&& (GetDeviceType() == 0 || GetDeviceType() == 1)
 			&& CBluetooth::GetInstance()->GetConnectStatus() == BT_CONNECT_STATUS_CONNECTED)
 		{
 			CBluetooth::GetInstance()->A2DPActive(TRUE);

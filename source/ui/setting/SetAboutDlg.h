@@ -4,6 +4,7 @@
 #include "SetBaseDlg.h"
 
 #define TIMER_ID_EXIT_APP	1060
+#define TIMER_ID_FACTORY_SET	1061
 
 class CSetAboutDlg : public CSetBaseDlg
 {
