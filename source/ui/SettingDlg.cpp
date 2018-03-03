@@ -34,7 +34,7 @@ void CSettingDlg::OnInitDialog()
 	{
 		pLayer->SetScrollMode(SL_VERT);
 		pLayer->SetExtraScroll(30);
-		pLayer->SetScrollRange(0, WceUiGetScreenWidth()==1024 ? 600 : (457-168));
+		pLayer->SetScrollRange(0, WceUiGetScreenWidth()==1024 ? 600 : 224);
 	}
 
 	// calibrate

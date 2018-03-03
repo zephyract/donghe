@@ -94,7 +94,7 @@ static void _nss_init_by_config()
 
 
 	// 大灯检测, 缺省是关
-	pnss->sys_light_check = TRUE;
+	pnss->sys_light_check = FALSE;
 
 	//屏保缺省为关闭
 	pnss->ui_screen_saver_mode = 0;
@@ -112,7 +112,7 @@ static void _nss_init_by_config()
 	pnss->sys_canbus_type = config::get_config_canbus()->canbus_type;
 
 	// 七彩灯缺省为0
-	pnss->ui_colorful_light = 0;
+	pnss->ui_colorful_light = 5;
 
 	// EQ custom缺省值
 	for (int i=0; i<sizeof(pnss->audio_eq_custom)/sizeof(pnss->audio_eq_custom[0]); i++)

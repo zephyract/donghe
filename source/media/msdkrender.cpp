@@ -340,19 +340,20 @@ void CMsdkRender::OnGraphBuiltFile()
 
 BOOL CMsdkRender::FIsMediaTypeSupport()
 {
-	MSDK_MEDIA_INFO_T info;
-	memset(&info,0,sizeof(MSDK_MEDIA_INFO_T));
-	if (FGetMediaInfo(&info))
-	{
-		// 如果当前视频为h.264, 配置表中又配置为不支持h.264则不要播放
-		if (info.rVdoInfo.eVCodec == MSDK_AVCODEC_ID_H264 && (config::get_config_video()->h264 == 0)
-			/*|| info.rVdoInfo.eVCodec == MSDK_AVCODEC_ID_DIVX4 
-			|| info.rVdoInfo.eVCodec == MSDK_AVCODEC_ID_DIVX5
-			|| info.rVdoInfo.eVCodec == MSDK_AVCODEC_ID_DIVX6*/)
-		{
-			return FALSE;
-		}
-	}
+	// 播放OGG文件时，调用该接口会导致底层播放功能失效，其它文件都不能播放了，原因未知。
+// 	MSDK_MEDIA_INFO_T info;
+// 	memset(&info,0,sizeof(MSDK_MEDIA_INFO_T));
+// 	if (FGetMediaInfo(&info))
+// 	{
+// 		// 如果当前视频为h.264, 配置表中又配置为不支持h.264则不要播放
+// 		if (info.rVdoInfo.eVCodec == MSDK_AVCODEC_ID_H264 && (config::get_config_video()->h264 == 0)
+// 			/*|| info.rVdoInfo.eVCodec == MSDK_AVCODEC_ID_DIVX4 
+// 			|| info.rVdoInfo.eVCodec == MSDK_AVCODEC_ID_DIVX5
+// 			|| info.rVdoInfo.eVCodec == MSDK_AVCODEC_ID_DIVX6*/)
+// 		{
+// 			return FALSE;
+// 		}
+// 	}
 
 	return TRUE;
 }
