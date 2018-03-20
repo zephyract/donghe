@@ -83,4 +83,7 @@ public:
 	// ·µ»ØÖµ: 0 ~ android,  1 ~ iOS
 	int GetDeviceType();
 	int m_nDeviceType;
+
+	BOOL IsConnected() {return m_bIsConnected;}
+	BOOL m_bIsConnected;
 };

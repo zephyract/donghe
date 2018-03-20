@@ -7,6 +7,7 @@
 #include "interface.h"
 #include "RadioRDSDlg.h"
 #include "phonelink.h"
+#include "easyconnected.h"
 
 extern DLG_INFO g_dlg_info[];
 int ui_get_dlg_info_count();
@@ -239,7 +240,8 @@ void CDlgManager::GotoLastDlg()
 		if( m_last_dlginfo->source_id < SOURCE_MAX_ID	// 是个真正的源, 不是SOURCE_MAIN或SOURCE_SETTING这些
 			&& sysutil::nss_get_instance()->is_source_available(m_last_dlginfo->source_id))
 		{
-			if(m_last_dlginfo->dlg_id != PhoneLink_ID || CPhoneLink::GetInstance()->IsConnected())
+			if((m_last_dlginfo->dlg_id != PhoneLink_ID || CPhoneLink::GetInstance()->IsConnected())
+				&& (m_last_dlginfo->dlg_id != EasyConnected_ID || CEasyConnected::GetInstance()->IsConnected()))
 			{
 				ShowDlg(m_last_dlginfo->dlg_id, m_last_dlginfo->source_id);
 			}

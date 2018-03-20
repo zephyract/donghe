@@ -12,6 +12,7 @@
 
 CEasyConnected::CEasyConnected(void)
 : m_nDeviceType(-1)
+, m_bIsConnected(FALSE)
 {
 
 }
@@ -111,6 +112,7 @@ BOOL CEasyConnected::HandleMessage(UINT message, WPARAM wParam, LPARAM lParam)
 
 void CEasyConnected::OnConnect(BOOL bConnect)
 {
+	m_bIsConnected = bConnect;
 	CMainWnd::GetInstance()->RestartScreenSaver();
 	if (sysutil::nss_get_instance()->sys_status == UISS_BACKLIGHT_OFF)  // 如果关屏了,打开屏幕
 	{
